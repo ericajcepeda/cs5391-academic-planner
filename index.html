@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#501214">
+  <title>Academic Planner | Texas State University</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to planner</a>
+  <header class="site-header">
+    <div class="brand-bar" aria-hidden="true"></div>
+    <div class="header-inner">
+      <div class="brand">
+        <img class="txst-logo" src="https://docs.gato.txst.edu/739751/w/2000/WUOVIF1Ybgh2/lgp_T1_TXState_Primary_2C.jpg" alt="Texas State University" />
+        <span class="brand-subtitle">Academic Planner</span>
+      </div>
+      <a class="hub-link" href="https://jessie-walker-cs.github.io/cs5391-student-success-hub/">← Back to Hub</a>
+    </div>
+  </header>
+  <main id="main" class="shell">
+    <div class="page-intro">
+      <div class="intro-actions">
+        <button class="button button-secondary" type="button" id="sample-button" disabled title="To be implemented with Lain">Load Sample Data</button>
+        <button class="button button-outline" type="button" id="reset-button" disabled title="To be implemented with Lain">Reset</button>
+      </div>
+    </div>
+    <div class="dashboard">
+      <section class="card calendar-section" aria-labelledby="calendar-heading">
+        <div class="section-top"><div><h2 id="calendar-heading">Academic calendar</h2></div></div>
+        <nav class="week-selector" aria-label="Choose a planning week" id="week-tabs">
+          <button type="button" disabled class="week-tab active" aria-current="true" data-week="0">W1</button><button type="button" disabled class="week-tab" data-week="1">W2</button><button type="button" disabled class="week-tab" data-week="2">W3</button><button type="button" disabled class="week-tab" data-week="3">W4</button><button type="button" disabled class="week-tab" data-week="4">W5</button><button type="button" disabled class="week-tab" data-week="5">W6</button><button type="button" disabled class="week-tab" data-week="6">W7</button><button type="button" disabled class="week-tab" data-week="7">W8</button>
+        </nav>
+        <div class="calendar-toolbar"><button class="icon-button" type="button" id="prev-week" disabled aria-label="Previous week">←</button><div class="week-title" aria-live="polite"><strong id="week-heading">Week 1 of 8</strong><span id="week-range">Oct 8 – Oct 14, 2026</span></div><button class="icon-button" type="button" id="next-week" disabled aria-label="Next week">→</button></div>
+        <div class="calendar-grid" id="calendar-grid" aria-label="Selected week’s calendar">
+          <div class="day"><div class="day-heading"><strong>Thu</strong>Oct 8</div><div class="day-body"></div></div>
+          <div class="day"><div class="day-heading"><strong>Fri</strong>Oct 9</div><div class="day-body"></div></div>
+          <div class="day"><div class="day-heading"><strong>Sat</strong>Oct 10</div><div class="day-body"></div></div>
+          <div class="day"><div class="day-heading"><strong>Sun</strong>Oct 11</div><div class="day-body"></div></div>
+          <div class="day"><div class="day-heading"><strong>Mon</strong>Oct 12</div><div class="day-body"></div></div>
+          <div class="day"><div class="day-heading"><strong>Tue</strong>Oct 13</div><div class="day-body"></div></div>
+          <div class="day"><div class="day-heading"><strong>Wed</strong>Oct 14</div><div class="day-body"></div></div>
+        </div>
+        <div class="calendar-footer"><span><span class="legend-dot pending"></span> Pending</span><span><span class="legend-dot completed"></span> Completed</span><span><span class="legend-dot break"></span> Academic break</span></div>
+      </section>
+      <section class="card tasks-section" aria-labelledby="tasks-heading">
+        <div class="section-top"><div><h2 id="tasks-heading">Assignments <span class="task-count" id="task-count">0</span></h2></div><button type="button" class="button button-primary" id="add-task" disabled title="To be connected to task logic">+ Add task</button></div>
+        <label class="sr-only" for="task-search">Search assignments</label><input id="task-search" disabled title="To be connected to task logic" class="search-input" type="search" placeholder="Search assignments…" autocomplete="off">
+        <div class="filter-row" role="group" aria-label="Filter assignments"><button type="button" class="filter active" disabled data-filter="all" aria-pressed="true">All</button><button type="button" class="filter" disabled data-filter="upcoming" aria-pressed="false">Upcoming</button><button type="button" class="filter" disabled data-filter="completed" aria-pressed="false">Completed</button><button type="button" class="filter" disabled data-filter="overdue" aria-pressed="false">Overdue</button></div>
+        <div id="task-list" class="task-list" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
