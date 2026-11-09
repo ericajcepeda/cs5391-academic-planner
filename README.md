@@ -14,3 +14,9 @@ The project uses the Agile methodology with three development sprints.
 
 ## Project Management
 Tasks, milestones, and progress are tracked through our [Jira Project Board](https://ericajcepeda.atlassian.net/jira/software/projects/KAN/boards/1).
+
+
+### Sources
+https://www.technologyuk.net/website-development/introduction-to-javascript/javascript-working-with-dates-and-times.shtml
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
