@@ -3,7 +3,7 @@
 //to help with this, I have included headers followed by forward slashes to help visually seperate the file
 //edit: subheaders will be included as astricks
 
-// access variables
+// index.html variable connections
 const prevWeekButton = document.getElementById("prev-week");
 const nextWeekButton = document.getElementById("next-week");
 const calendarGrid = document.getElementById("calendar-grid");
@@ -63,7 +63,7 @@ let tasks = [
 
 function displayTasks() {
     taskList.innerHTML = "";
-    //use the attributes of the tasks to make a card
+    //use the attributes of the tasks to make an element
     for (let task of tasks) {
         const taskElement = document.createElement("div");
         taskElement.classList.add("task");
@@ -238,7 +238,6 @@ function displayCalendar(week){
         calendarGrid.appendChild(day);
     }
 }
-
 
 displayTasks();
 displayWeekHeading(0);
