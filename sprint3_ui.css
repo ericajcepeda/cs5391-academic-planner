@@ -1,0 +1,23 @@
+/* SPRINT 3: Dashboard refinements. Loaded after existing planner styles. */
+.planner-setup-toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin:0 0 18px; }
+.planner-setup-toolbar h1 { margin:0; color:#501214; font-size:clamp(22px,3vw,30px); overflow-wrap:anywhere; }
+.planner-settings-link { display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid #501214; border-radius:8px; color:#501214; background:white; font-weight:bold; text-decoration:none; }
+.planner-setup-toolbar a:focus-visible,.planner-extra-filters select:focus-visible,.planner-extra-filters button:focus-visible { outline:3px solid #855c11; outline-offset:3px; }
+.planner-extra-filters { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
+.planner-extra-filters label { display:block; font-weight:bold; font-size:13px; margin-bottom:4px; color:#342625; }
+.planner-extra-filters select { min-width:0; width:100%; min-height:44px; border:1px solid #a99d90; border-radius:8px; padding:8px; background:white; color:#342625; font:inherit; }
+.planner-extra-filters button { grid-column:1/-1; justify-self:start; min-height:44px; }
+.planner-empty { padding:24px 12px; text-align:center; border:1px dashed #b9ac98; border-radius:12px; color:#625853; background:#faf8f4; }
+.planner-empty strong { display:block; color:#501214; margin-bottom:4px; }
+.planner-empty[hidden],.planner-filter-hidden { display:none !important; }
+.planner-course-tag { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; overflow-wrap:anywhere; color:#342625; }
+.planner-course-tag::before { content:''; width:10px; height:10px; border-radius:50%; background:var(--course-color,#766f6a); flex:none; }
+.task[data-planner-course-color] { border-inline-start:4px solid var(--course-color,#766f6a); }
+.calendar-task[data-planner-course-color] { border-inline-start:4px solid var(--course-color,#766f6a); }
+[data-planner-course-color="maroon"] { --course-color:#501214; }
+[data-planner-course-color="gold"] { --course-color:#856218; }
+[data-planner-course-color="blue"] { --course-color:#215b91; }
+[data-planner-course-color="green"] { --course-color:#28734b; }
+[data-planner-course-color="purple"] { --course-color:#774898; }
+[data-planner-course-color="neutral"] { --course-color:#766f6a; }
+@media(max-width:600px) { .planner-setup-toolbar { align-items:flex-start; } .planner-extra-filters { grid-template-columns:1fr; } .planner-settings-link { min-height:44px; } .task,.calendar-task { overflow-wrap:anywhere; } }

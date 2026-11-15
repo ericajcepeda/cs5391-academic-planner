@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#501214">
+  <title>Planner Setup | Academic Planner</title>
+  <style>
+    /* WELCOME PAGE: independent styles; no changes to the existing planner CSS. */
+    :root { --maroon:#501214; --gold:#c7aa72; --ink:#302625; --muted:#625853; --line:#ded6cb; --paper:#faf8f4; }
+    * { box-sizing:border-box; }
+    body { margin:0; font:16px/1.5 Arial,sans-serif; color:var(--ink); background:var(--paper); }
+    header { border-top:7px solid var(--maroon); background:white; border-bottom:1px solid var(--line); }
+    .header-inner { max-width:1120px; margin:auto; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+    .brand { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+    .brand img { width:180px; max-width:100%; height:auto; }
+    .brand span { font-weight:bold; color:var(--maroon); border-left:1px solid var(--line); padding-left:18px; }
+    a { color:var(--maroon); font-weight:bold; text-underline-offset:3px; }
+    main { max-width:1120px; margin:auto; padding:48px 24px; display:grid; grid-template-columns:minmax(0, .9fr) minmax(0, 1.2fr); gap:32px; align-items:start; }
+    .intro { background:var(--maroon); color:white; padding:38px; border-radius:18px; }
+    .eyebrow { font-size:12px; text-transform:uppercase; letter-spacing:.12em; color:#e3cc99; font-weight:bold; margin:0 0 14px; }
+    h1 { margin:0 0 16px; font-size:clamp(32px,4vw,46px); line-height:1.12; letter-spacing:-.025em; }
+    .intro p { color:#f5e8e1; }
+    .steps { list-style:none; padding:0; margin:28px 0 0; }
+    .steps li { display:flex; align-items:center; gap:12px; border-top:1px solid #ffffff35; padding:16px 0; }
+    .steps span { display:grid; place-items:center; width:32px; height:32px; flex:none; background:var(--gold); color:var(--maroon); border-radius:50%; font-weight:bold; }
+    .setup { background:white; border:1px solid var(--line); border-radius:18px; padding:30px; box-shadow:0 8px 25px #5012140b; }
+    h2 { color:var(--maroon); margin:0 0 6px; font-size:24px; }
+    h3 { font-size:17px; margin:24px 0 6px; color:var(--maroon); }
+    .muted, .hint { color:var(--muted); font-size:13px; margin:4px 0 12px; }
+    .field { margin:16px 0; min-width:0; }
+    label { display:block; font-weight:bold; font-size:14px; margin-bottom:6px; }
+    .optional { font-weight:normal; color:var(--muted); }
+    input, select { font:inherit; color:var(--ink); width:100%; min-height:44px; padding:10px 12px; border:1px solid #aa9d8e; border-radius:8px; background:white; }
+    .two { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .course { display:grid; grid-template-columns:minmax(0,1fr) 110px; gap:10px; margin:12px 0; }
+    .course input, .course select { min-width:0; }
+    button { font:inherit; cursor:pointer; border:1px solid var(--maroon); border-radius:8px; padding:12px 18px; font-weight:bold; min-height:44px; }
+    .primary { color:white; background:var(--maroon); }
+    .secondary { color:var(--maroon); background:white; }
+    .primary:hover { background:#6b2022; }
+    .secondary:hover { background:#f9f0e4; }
+    :focus-visible { outline:3px solid #855c11; outline-offset:3px; }
+    .intro :focus-visible { outline-color:white; }
+    .actions { display:flex; gap:16px; flex-wrap:wrap; align-items:center; margin-top:24px; }
+    .notice { padding:12px 14px; background:#f7f1e5; border-radius:8px; color:#50432c; font-size:13px; margin-top:20px; }
+    #setup-message { color:#972b2b; font-weight:bold; font-size:14px; }
+    .skip { position:absolute; left:12px; top:-100px; padding:12px; background:white; z-index:2; }
+    .skip:focus { top:10px; }
+    @media(max-width:760px) { main { grid-template-columns:1fr; padding:24px 16px; gap:20px; } .intro,.setup { padding:24px; } .brand span { border:0; padding:0; } }
+    @media(max-width:390px) { .two { grid-template-columns:1fr; gap:0; } .course { grid-template-columns:1fr; } .actions { align-items:stretch; flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#setup-heading">Skip to setup</a>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <img src="https://docs.gato.txst.edu/739751/w/2000/WUOVIF1Ybgh2/lgp_T1_TXState_Primary_2C.jpg" alt="Texas State University">
+        <span>Academic Planner</span>
+      </div>
+      <a href="https://jessie-walker-cs.github.io/cs5391-student-success-hub/">← Back to Hub</a>
+    </div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="welcome-heading">
+      <p class="eyebrow">Your semester starts here</p>
+      <h1 id="welcome-heading">Hey, Bobcat!</h1>
+      <p>Make your academic planner your own, one assignment and one week at a time.</p>
+      <ol class="steps">
+        <li><span aria-hidden="true">1</span> Set up your term</li>
+        <li><span aria-hidden="true">2</span> Organize your courses</li>
+        <li><span aria-hidden="true">3</span> Start planning</li>
+      </ol>
+    </section>
+    <section class="setup" aria-labelledby="setup-heading">
+      <h2 id="setup-heading" tabindex="-1">Set up your planner</h2>
+      <p class="muted">Use fictional information for this academic prototype.</p>
+      <form id="setup-form">
+        <div class="field">
+          <label for="preferred-name">Preferred name <span class="optional">(optional)</span></label>
+          <input id="preferred-name" maxlength="60" placeholder="e.g., Bobcat" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="term">Academic term</label>
+          <select id="term"><option value="Fall 2 2026">Fall 2 2026</option><option value="Other">Other term</option></select>
+        </div>
+        <div class="two">
+          <div class="field"><label for="start-date">Term start date</label><input id="start-date" type="date" value="2026-10-08" required></div>
+          <div class="field"><label for="weeks">Number of weeks</label><input id="weeks" type="number" value="8" min="1" max="16" step="1" required></div>
+        </div>
+        <h3>My courses <span class="optional">(optional)</span></h3>
+        <p class="hint">Give each course a name and color for easier organization.</p>
+        <div id="courses"></div>
+        <button class="secondary" type="button" id="add-course">+ Add course</button>
+        <p class="notice">Setup preferences stay on this device. Custom term dates, course colors and personalization will apply to the calendar once integrated with the planner.</p>
+        <p id="setup-message" role="alert" hidden></p>
+        <div class="actions"><button class="primary" type="submit">Start planning →</button><a href="index.html">Skip for now</a></div>
+      </form>
+    </section>
+  </main>
+  <template id="course-template">
+    <div class="course"><div><label class="course-label">Course name</label><input class="course-name" maxlength="80" placeholder="e.g., CS 5391"></div><div><label class="color-label">Color</label><select class="course-color"><option value="maroon">Maroon</option><option value="gold">Gold</option><option value="blue">Blue</option><option value="green">Green</option><option value="purple">Purple</option></select></div></div>
+  </template>
+  <script>
+    // WELCOME SETUP: separate prototype module. Does not change planner_logic.js.
+    // Integration contract: read this versioned key in the planner after team review.
+    const setupKey = 'cs5391.planner.preferences.v1';
+    const form = document.getElementById('setup-form');
+    const courses = document.getElementById('courses');
+    const addCourse = document.getElementById('add-course');
+    const message = document.getElementById('setup-message');
+    const colors = ['maroon', 'gold', 'blue', 'green', 'purple'];
+
+    // Create accessible course rows without injecting user-entered HTML.
+    function appendCourse(name = '', color = colors[courses.children.length % colors.length]) {
+      if (courses.children.length >= 12) return;
+      const row = document.getElementById('course-template').content.cloneNode(true);
+      const number = courses.children.length + 1;
+      const input = row.querySelector('.course-name');
+      const select = row.querySelector('.course-color');
+      input.id = `course-name-${number}`;
+      select.id = `course-color-${number}`;
+      row.querySelector('.course-label').setAttribute('for', input.id);
+      row.querySelector('.color-label').setAttribute('for', select.id);
+      input.value = name;
+      select.value = colors.includes(color) ? color : 'maroon';
+      courses.append(row);
+      addCourse.disabled = courses.children.length >= 12;
+      return input;
+    }
+    addCourse.addEventListener('click', () => appendCourse()?.focus());
+
+    // Restore previously saved demo preferences, if available.
+    try {
+      const saved = JSON.parse(localStorage.getItem(setupKey) || 'null');
+      if (saved && typeof saved === 'object') {
+        document.getElementById('preferred-name').value = typeof saved.preferredName === 'string' ? saved.preferredName : '';
+        if (['Fall 2 2026', 'Other'].includes(saved.term)) document.getElementById('term').value = saved.term;
+        if (typeof saved.startDate === 'string') document.getElementById('start-date').value = saved.startDate;
+        if (Number.isInteger(saved.weeks) && saved.weeks >= 1 && saved.weeks <= 16) document.getElementById('weeks').value = saved.weeks;
+        if (Array.isArray(saved.courses)) saved.courses.slice(0, 12).forEach(course => {
+          if (course && typeof course.name === 'string') appendCourse(course.name, course.color);
+        });
+      }
+    } catch { /* Invalid or unavailable storage: keep defaults. */ }
+    if (!courses.children.length) appendCourse();
+
+    // Save only setup preferences, not task data or student records.
+    // The existing planner still uses its original eight-week calendar until integrated.
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const preferences = {
+        preferredName: document.getElementById('preferred-name').value.trim(),
+        term: document.getElementById('term').value,
+        startDate: document.getElementById('start-date').value,
+        weeks: Number(document.getElementById('weeks').value),
+        courses: Array.from(courses.children).map(row => ({
+          name: row.querySelector('.course-name').value.trim(),
+          color: row.querySelector('.course-color').value
+        })).filter(course => course.name !== '')
+      };
+      try {
+        localStorage.setItem(setupKey, JSON.stringify(preferences));
+        window.location.assign('index.html');
+      } catch {
+        message.textContent = 'Preferences could not be saved on this device. You can still skip setup and open the planner.';
+        message.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>
