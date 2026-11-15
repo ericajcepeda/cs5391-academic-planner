@@ -39,7 +39,7 @@ class Task {
  // within the current week so the user can always see the sample data no matter when they start using the webapp
  // need to set up how to remove, and to pair this to the button
 
- const sampletask1 = new Task(
+const sampletask1 = new Task(
     "Calculus 2 Worksheet", 
     "Math", 
     "Not Started",
@@ -165,6 +165,7 @@ function displayWeekHeading(weekNo) { //this function refers to the header part 
 
 
 // Week navigation *************************************************
+const wTab = document.getElementById("wTab");
 
 weekTabs.forEach(function(wTab) {
     wTab.addEventListener("click", function() {
@@ -173,19 +174,27 @@ weekTabs.forEach(function(wTab) {
     });
 });
 
-function seeNextWeek() { //tied to arrow button 
-    //plan for future sprint :
-    // figure out which week the user is on
-    // change the week
-    // rerender the calendar
-}
+// Next week button 
+nextWeekButton.addEventListener("click", function(){
+    let nextWeekNo = currentWeek + 1; //right now the data is static and has a limit, but in the future, it will not be static. For this reason, a limit on the week number has not been enforced.
+    displayWeekHeading(nextWeekNo);
+    });
 
-function seePreviousWeek() {//tied to arrow button
-    //plan for future sprint:
-    // figure out which week the user is on
-    // change the week
-    // rerender calendar
-}
+// last week button
+prevWeekButton.addEventListener("click", function(){
+    let prevWeekNo = currentWeek - 1; //right now the data is static and has a limit, but in the future, it will not be static. For this reason, a limit on the week number has not been enforced.
+    displayWeekHeading(prevWeekNo)
+    });
+
+    //at the moment, this logic seems not essential, but I would like to keep it included for next sprint. 
+    // if (prevWeekNo < 0){
+    //     displayWeekHeading(0)
+    // };  //if you are already on the current week, you cannot go further back. 
+    //     //We may decide to change this in a future sprint to be mroe similar to the style of Apple Calendar or Google Calendar 
+    //     //where you can view previous points in time, but for now this is straight forward and makes sense
+    // else{
+    //     displayWeekHeading(prevWeekNo);
+    // };
 
 // Display calendar by week *************************************************************
 
@@ -198,7 +207,7 @@ function displayCalendar(week){
         currentDate.setDate(startDate.getDate() + i); //set date
         const dateString = currentDate.toISOString().split("T")[0]; //makes string from date
 
-        const day = document.createElement("div"); //make day element
+        const day = document.createElement("div"); //creating day element
         day.classList.add("day");                   
 
         const dayHeading = document.createElement("div");//headers for days labeled
