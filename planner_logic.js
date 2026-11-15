@@ -165,6 +165,7 @@ function displayWeekHeading(weekNo) { //this function refers to the header part 
 
 
 // Week navigation *************************************************
+const wTab = document.getElementById("wTab");
 
 weekTabs.forEach(function(wTab) {
     wTab.addEventListener("click", function() {
