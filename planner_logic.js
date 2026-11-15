@@ -174,19 +174,27 @@ weekTabs.forEach(function(wTab) {
     });
 });
 
-function seeNextWeek() { //tied to arrow button 
-    //plan for future sprint :
-    // figure out which week the user is on
-    // change the week
-    // rerender the calendar
-}
+// Next week button 
+nextWeekButton.addEventListener("click", function(){
+    let nextWeekNo = currentWeek + 1; //right now the data is static and has a limit, but in the future, it will not be static. For this reason, a limit on the week number has not been enforced.
+    displayWeekHeading(nextWeekNo);
+    });
 
-function seePreviousWeek() {//tied to arrow button
-    //plan for future sprint:
-    // figure out which week the user is on
-    // change the week
-    // rerender calendar
-}
+// last week button
+prevWeekButton.addEventListener("click", function(){
+    let prevWeekNo = currentWeek - 1; //right now the data is static and has a limit, but in the future, it will not be static. For this reason, a limit on the week number has not been enforced.
+    displayWeekHeading(prevWeekNo)
+    });
+
+    //at the moment, this logic seems not essential, but I would like to keep it included for next sprint. 
+    // if (prevWeekNo < 0){
+    //     displayWeekHeading(0)
+    // };  //if you are already on the current week, you cannot go further back. 
+    //     //We may decide to change this in a future sprint to be mroe similar to the style of Apple Calendar or Google Calendar 
+    //     //where you can view previous points in time, but for now this is straight forward and makes sense
+    // else{
+    //     displayWeekHeading(prevWeekNo);
+    // };
 
 // Display calendar by week *************************************************************
 
