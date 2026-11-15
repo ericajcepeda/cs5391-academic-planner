@@ -39,7 +39,7 @@ class Task {
  // within the current week so the user can always see the sample data no matter when they start using the webapp
  // need to set up how to remove, and to pair this to the button
 
- const sampletask1 = new Task(
+const sampletask1 = new Task(
     "Calculus 2 Worksheet", 
     "Math", 
     "Not Started",
@@ -198,7 +198,7 @@ function displayCalendar(week){
         currentDate.setDate(startDate.getDate() + i); //set date
         const dateString = currentDate.toISOString().split("T")[0]; //makes string from date
 
-        const day = document.createElement("div"); //make day element
+        const day = document.createElement("div"); //creating day element
         day.classList.add("day");                   
 
         const dayHeading = document.createElement("div");//headers for days labeled
