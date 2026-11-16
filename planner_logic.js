@@ -176,6 +176,10 @@ weekTabs.forEach(function(wTab) {
     wTab.addEventListener("click", function() {
         const weekNo = Number(wTab.dataset.week);
         displayWeekHeading(weekNo);
+        //remove active from previous button
+        weekTabs.forEach(wTab => wTab.classList.remove('active'));
+        //add active to clicked tab
+        wTab.classList.add("active");
     });
 });
 
