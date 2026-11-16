@@ -1,0 +1,226 @@
+/* SPRINT 2: ERICA'S HTML/CSS UI UPDATES /////////////////////////////////////////
+   This stylesheet adds interfaces without editing Lain's planner_logic.js.
+   It loads AFTER styles.css and reuses existing --maroon/--dark-gold/--border.
+   Keeping the new styles in their own file makes the pull request easy to review.
+*/
+
+/* ADD / EDIT ASSIGNMENT FORM ***************************************************
+   A native popover lets us preview the form without JavaScript.
+   Use the same field IDs to connect add/edit task operations.
+*/
+.task-editor {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  width: min(94vw, 510px);
+  max-height: min(88vh, 780px);
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: white;
+  color: #342625;
+  box-shadow: 0 24px 70px rgba(30, 10, 12, .22);
+}
+.task-editor::backdrop { background: rgba(25, 16, 17, .56); }
+.editor-header {
+  padding: 22px 24px 16px;
+  border-top: 7px solid var(--maroon);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+.editor-header h2 { font-size: 23px; margin: 4px 0 0; color: var(--maroon); }
+.editor-kicker { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #775e30; font-weight: 700; margin: 0; }
+.editor-dismiss {
+  background: var(--soft-gold);
+  color: var(--maroon);
+  border: 1px solid var(--border);
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  font-size: 26px;
+  line-height: 1;
+}
+#task-form { padding: 18px 24px 24px; }
+.editor-field { margin-bottom: 17px; }
+.editor-field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.required-mark { color: #a72b2b; }
+.field-optional { color: var(--muted); font-weight: 400; }
+.editor-field input,
+.editor-field textarea,
+.editor-field select {
+  display: block;
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid #b7aa9e;
+  border-radius: 9px;
+  background: white;
+  color: #342625;
+  font: inherit;
+  font-size: 14px;
+  min-height: 44px;
+}
+.editor-field textarea { min-height: 100px; resize: vertical; }
+.editor-field select { cursor: pointer; }
+.editor-field input::placeholder,
+.editor-field textarea::placeholder { color: #766d68; }
+.editor-field input:focus,
+.editor-field textarea:focus,
+.editor-field select:focus { border-color: var(--maroon); }
+.field-hint { margin: 6px 0 0; font-size: 11px; line-height: 1.5; color: var(--muted); }
+
+/* SIDE-BY-SIDE FORM FIELDS ***************************************************
+   Date/time and type/priority share a row on desktops, but stack on phones.
+*/
+.editor-two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.editor-two-col .editor-field { min-width: 0; }
+
+/* VALIDATION STATES ***********************************************************
+   set aria-invalid="true" and toggle .field-error[hidden].
+   CSS alone displays these states; it does not determine whether a date is valid
+*/
+.editor-field [aria-invalid="true"] {
+  border: 2px solid #ad3030;
+  background: #fff8f7;
+}
+.field-error { color: #982728; margin: 7px 0 0; font-weight: 700; font-size: 12px; line-height: 1.5; }
+.form-message { border-radius: 8px; border: 1px solid; padding: 12px 13px; font-size: 12px; line-height: 1.5; margin: 8px 0 16px; }
+.form-message-error { background: #fff3f2; border-color: #cf8e8c; color: #8e2424; }
+.form-message-success { background: #f0f7ef; border-color: #8fae8d; color: #315a32; }
+/* Explicit [hidden] rule ensures error messages stay hidden even when styled. */
+.field-error[hidden], .form-message[hidden] { display: none; }
+.editor-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
+.editor-actions button { min-height: 44px; }
+.button:disabled { opacity: .52; cursor: not-allowed; }
+
+/* COMPLETE / EDIT / DELETE BUTTONS ********************************************
+   These class names match #task-actions-template in index.html.
+   displayTasks() can append the template inside each generated .task.
+*/
+.task-actions { display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 13px; }
+.task-action {
+  border: 1px solid #cdbfae;
+  background: white;
+  color: var(--maroon);
+  padding: 8px 11px;
+  min-height: 40px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+}
+.task-action:hover { background: var(--soft-gold); }
+.task-action-complete { background: #eff5f0; color: #28523c; border-color: #adc9b7; }
+.task-action-complete:hover { background: #e0efe4; }
+.task-action-delete { color: #922a2d; border-color: #dcb3b3; }
+.task-action-delete:hover { background: #fff0ef; }
+.task-action:focus-visible, .editor-dismiss:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* COURSE / TYPE / PRIORITY / DEADLINE / URGENCY CARD LABELS *******************
+   Applied when Lain's script clones #task-meta-template into each .task.
+   Status is readable without color, which improves accessibility.
+   For `due soon` / `overdue`, JS must determine status from local date+time;
+   never treat these CSS classes as implementing actual deadline logic.
+*/
+.task-meta { margin-top: 10px; font-size: 12px; }
+.task-meta-top, .task-meta-details { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin-bottom: 9px; }
+.task-meta-top { justify-content: space-between; }
+.task-course-tag { display: inline-flex; align-items: center; max-width: 100%; border-left: 4px solid var(--maroon); background: #f8f1ee; color: var(--maroon); border-radius: 4px 7px 7px 4px; padding: 6px 9px; font-weight: 700; overflow-wrap: anywhere; }
+/* Optional course palettes. JS can assign one of these if the team chooses. */
+.task-course-tag.course-gold { border-left-color: #937034; background: #f8f3e6; color: #614c25; }
+.task-course-tag.course-blue { border-left-color: #456d8d; background: #eff4f8; color: #31536e; }
+.task-course-tag.course-green { border-left-color: #4d7864; background: #eef6f1; color: #2f5e49; }
+.task-type-tag, .task-priority-tag, .task-urgency { display: inline-flex; align-items: center; border-radius: 100px; padding: 5px 9px; font-size: 11px; font-weight: 700; line-height: 1.3; }
+.task-type-tag { background: #f4f0ea; color: #62534b; }
+.task-priority-tag { border: 1px solid #cdbfae; color: #56483c; background: #fff; }
+.task-priority-tag[data-priority="high"] { background: #fff0ed; border-color: #d9b0a7; color: #902f28; }
+.task-priority-tag[data-priority="low"] { background: #f0f5f3; border-color: #b7cfc4; color: #345b4a; }
+.task-urgency-upcoming { background: #f2eee7; color: #675b4c; }
+.task-urgency-soon { background: #fff3dc; color: #77510a; }
+.task-urgency-overdue { background: #feece9; color: #9c3028; }
+.task-urgency-completed { background: #e8f4ec; color: #2b6343; }
+.task-deadline { color: #54463d; line-height: 1.5; margin: 3px 0 0; }
+.task-deadline-value { font-weight: 700; }
+/* Visible button/label presentation remains usable for touch and keyboard. */
+
+/* RESPONSIVE DESIGN ***********************************************************
+   The calendar already becomes a stacked day list in styles.css under 630px.
+   These rules keep the new form and buttons usable at phone widths.
+*/
+@media (max-width: 630px) {
+  .task-editor { width: min(96vw, 510px); max-height: 92vh; }
+  .editor-header { padding: 16px 16px 12px; }
+  #task-form { padding: 16px; }
+  .editor-header h2 { font-size: 20px; }
+  .editor-two-col { grid-template-columns: 1fr; gap: 0; }
+  .task-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .task-action { padding: 9px 5px; white-space: normal; overflow-wrap: anywhere; }
+  .editor-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .editor-actions button { white-space: normal; padding: 10px 7px; }
+}
+@media (max-width: 350px) {
+  .task-actions { grid-template-columns: 1fr; }
+  .editor-actions { grid-template-columns: 1fr; }
+}
+
+/* SPRINT 2: COURSE / TYPE / PRIORITY / DUE TIME ///////////////////////////////
+   Inputs and selects use the same accessible styling as the original fields.
+   The date and time sit side by side on desktop and stack on narrow phones.
+   Priority is student-selected. Urgency below depends on current due date/time.
+*/
+.editor-field select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 13px;
+  border: 1px solid #b7aa9e;
+  border-radius: 9px;
+  background: #fff;
+  color: #342625;
+  font: inherit;
+  font-size: 14px;
+}
+.editor-field select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.editor-field-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); column-gap: 14px; }
+.editor-field-grid > .editor-field { min-width: 0; }
+.editor-field input[type="time"] { min-width: 0; }
+
+/* SPRINT 2: CARD METADATA AND URGENCY BADGES //////////////////////////////////
+   Keep badge text visible; color is an additional visual clue.
+   Lain should choose the urgency class from a dueDate + dueTime comparison.
+   These styles do not create data or calculate deadlines.
+*/
+.task-details { margin-top: 8px; }
+.task-course-label { color: var(--maroon); font-size: 12px; font-weight: 700; margin: 6px 0 8px; }
+.task-course-label:empty { display: none; }
+.task-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.task-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 20px;
+  border: 1px solid #d5c8ba;
+  background: #faf8f4;
+  color: #57433e;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.task-chip[hidden] { display: none; }
+.task-type-chip { background: #f9f3e8; border-color: #d6c49e; color: #705526; }
+.task-priority-chip.priority-high { background: #fff0ef; border-color: #deb0ad; color: #8d2729; }
+.task-priority-chip.priority-medium { background: #fff5e5; border-color: #dcc491; color: #70501b; }
+.task-priority-chip.priority-low { background: #edf4f0; border-color: #b4c8bb; color: #365c4a; }
+.task-urgency-chip.urgency-due-soon { background: #fff1db; border-color: #d6a861; color: #785014; }
+.task-urgency-chip.urgency-overdue { background: #ffecea; border-color: #d98b87; color: #902c2d; }
+.task-urgency-chip.urgency-completed { background: #edf6f0; border-color: #a8c4b1; color: #265c40; }
+.task-urgency-chip.urgency-upcoming { background: #f5f0e8; border-color: #cbbca9; color: #624c3a; }
+.task-deadline { margin: 8px 0 0; color: #5c4d47; font-size: 12px; line-height: 1.45; }
+.deadline-label { font-weight: 700; }
+@media (max-width: 630px) {
+  .editor-field-grid { column-gap: 8px; }
+  .task-chip { font-size: 10px; }
+}
+@media (max-width: 390px) { .editor-field-grid { grid-template-columns: 1fr; } }
