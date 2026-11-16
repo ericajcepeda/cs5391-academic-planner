@@ -11,6 +11,7 @@ const taskList = document.getElementById("task-list");
 const weekTabs = document.querySelectorAll(".week-tab");//this targets all buttons with week-tab class
 const weekHeading = document.getElementById("week-heading");
 const weekRange = document.getElementById("week-range");
+const taskQuantity = document.getElementById("task-count");
 
 
 // TASK SETUP  ///////////////////////////////////////////////////////////////////////
@@ -31,6 +32,10 @@ class Task {
     edit(){
 // planned addition for future sprint, for editting tasks
     }
+}
+
+function updateTaskQuantity() {
+    taskQuantity.innerHTML = tasks.length;
 }
 
 // Sample data setup ****************************************************
@@ -250,3 +255,4 @@ function displayCalendar(week){
 
 displayTasks();
 displayWeekHeading(0);
+updateTaskQuantity();
