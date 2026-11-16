@@ -59,7 +59,11 @@
           <button type="button" class="button button-primary" id="add-task" popovertarget="task-editor" aria-haspopup="dialog">+ Add task</button>
         </div>
         <label class="sr-only" for="task-search">Search assignments</label><input id="task-search" disabled title="To be connected to task logic" class="search-input" type="search" placeholder="Search assignments…" autocomplete="off">
-        <div class="filter-row" role="group" aria-label="Filter assignments"><button type="button" class="filter active" disabled data-filter="all" aria-pressed="true">All</button><button type="button" class="filter" disabled data-filter="upcoming" aria-pressed="false">Upcoming</button><button type="button" class="filter" disabled data-filter="completed" aria-pressed="false">Completed</button><button type="button" class="filter" disabled data-filter="overdue" aria-pressed="false">Overdue</button></div>
+        <div class="filter-row" role="group" aria-label="Filter assignments">
+        <button id="all-filter" type="button" class="filter active" data-filter="all" aria-pressed="true">All</button>
+        <button id="upcoming-filter" type="button" class="filter" data-filter="upcoming" aria-pressed="false">Upcoming</button>
+        <button id="completed-filter" type="button" class="filter" data-filter="completed" aria-pressed="false">Completed</button>
+        <button id="overdue-filter" type="button" class="filter" data-filter="overdue" aria-pressed="false">Overdue</button></div>
         <!-- SPRINT 1: Lain's displayTasks() fills this node with .task elements.
              Do not put static examples here or they will be replaced on every redraw. -->
         <div id="task-list" class="task-list" aria-live="polite"></div>

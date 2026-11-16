@@ -66,10 +66,10 @@ let tasks = [
 
 //Display task list ******************************************************
 
-function displayTasks() {
+function displayTasks(tasklist) {
     taskList.innerHTML = "";
     //use the attributes of the tasks to make an element
-    for (let task of tasks) {
+    for (let task of tasklist) {
         const taskElement = document.createElement("div");
         taskElement.classList.add("task");
 
@@ -98,6 +98,61 @@ function displayTasks() {
     }
 }
 
+
+// Display by status
+const filterButtons = document.querySelectorAll(".filter")
+const filterAll = document.getElementById("all-filter")
+const filterCompleted = document.getElementById("completed-filter")
+const filterOverdue = document.getElementById("overdue-filter")
+const filterUpcoming = document.getElementById("upcoming-filter")
+
+
+filterAll.addEventListener("click", function() {
+    displayTasks(tasks); //just display full list of tasks
+    //remove active from previous button
+    filterButtons.forEach(button => button.classList.remove('active'));
+    //add active to clicked tab
+    filterAll.classList.add("active");
+})
+
+filterCompleted.addEventListener("click", function() {
+    let filteredTasks = []
+    for (const task of tasks){
+        if (task.status == "Complete"){ 
+            filteredTasks.push(task);
+    }};
+    displayTasks(filteredTasks);
+    //remove active from previous button
+    filterButtons.forEach(button => button.classList.remove('active'));
+    //add active to clicked tab
+    filterCompleted.classList.add("active");
+})
+
+filterUpcoming.addEventListener("click", function() {
+    let filteredTasks = []
+    for (const task of tasks){
+        if (task.status != "Complete"){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is after currentDate
+            filteredTasks.push(task);
+    }};
+    displayTasks(filteredTasks);
+    //remove active from previous button
+    filterButtons.forEach(button => button.classList.remove('active'));
+    //add active to clicked tab
+    filterUpcoming.classList.add("active");
+})
+
+filterOverdue.addEventListener("click", function() {
+    let filteredTasks = []
+    for (const task of tasks){
+        if (task.status != "Complete" && task.dueDate == "2026-10-05"){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is before current date
+            filteredTasks.push(task);
+    }};
+    displayTasks(filteredTasks);
+    //remove active from previous button
+    filterButtons.forEach(button => button.classList.remove('active'));
+    //add active to clicked tab
+    filterOverdue.classList.add("active");
+})
 // WEEK SETUP ///////////////////////////////////////////////////////////////////
 
 let currentWeek = 0; //starts at 0 
@@ -169,7 +224,7 @@ function displayWeekHeading(weekNo) { //this function refers to the header part 
 }
 
 
-// Week navigation *************************************************
+// WEEK NAVIGATION *************************************************
 const wTab = document.getElementById("wTab");
 
 weekTabs.forEach(function(wTab) {
@@ -257,6 +312,6 @@ function displayCalendar(week){
     }
 }
 
-displayTasks();
+displayTasks(tasks);
 displayWeekHeading(0);
 updateTaskQuantity();
