@@ -64,7 +64,22 @@ let tasks = [
     sampletask1, sampletask2
 ]
 
+function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
+    localStorage.setItem("tasklist", JSON.stringify(tasklist)); //local storage only holds strings
+}
+
+
+
 //Display task list ******************************************************
+
+//add event listener that waits for the submission of the task form
+//puts the fields in the correct format
+//appends them to the task list (addTask)
+//within addTask, update tasklist in localstorage
+//display based on local storage
+function addTask(tasklist){
+
+}
 
 function displayTasks(tasklist) {
     taskList.innerHTML = "";
