@@ -21,3 +21,4 @@ https://www.technologyuk.net/website-development/introduction-to-javascript/java
 
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
 
+https://medium.com/@wachirasilvia8/adding-items-to-the-local-storage-9c7bb31f209 
