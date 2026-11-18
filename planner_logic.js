@@ -108,12 +108,16 @@ function addTask(tasklist){
 }
 
 
-//Display task list ******************************************************
+//DISPLAYING TASK LIST ////////////////////////////////////////////
 
 //add event listener that waits for the submission of the task form
 
 
-function displayTasks(tasklist) {
+function displayTasks() {
+    //fetching data
+    const rawtasklist = localStorage.getItem("tasks");
+    const tasklist = JSON.parse(rawtasklist) || [];
+
     taskList.innerHTML = "";
     //use the attributes of the tasks to make an element
     for (let task of tasklist) {
@@ -200,7 +204,9 @@ filterOverdue.addEventListener("click", function() {
     //add active to clicked tab
     filterOverdue.classList.add("active");
 })
-// WEEK SETUP ///////////////////////////////////////////////////////////////////
+
+
+// CALENDAR ///////////////////////////////////////////////////////////////////
 
 let currentWeek = 0; //starts at 0 
 
@@ -339,11 +345,15 @@ function displayCalendar(week){
         dayHeading.appendChild(weekdayName); // day of week
         dayHeading.appendChild(dateText);  //   date (ex. October 5)
 
+        
         //task display (within day)
         const body = document.createElement("div");
         body.classList.add("day-body");
-        
-        const tasksDueOnDay = tasks.filter(function(task) {
+        //fetch the tasks
+        const rawtasklist = localStorage.getItem("tasks");
+        const tasklist = JSON.parse(rawtasklist) || [];
+
+        const tasksDueOnDay = tasklist.filter(function(task) {
             return task.dueDate === dateString;
         });
         tasksDueOnDay.forEach(function(task) {
@@ -359,6 +369,8 @@ function displayCalendar(week){
     }
 }
 
-displayTasks(tasks);
+//LETS GET THIS PARTY STARTED! 
+updateTasks(tasks); //this starts by saving the initial tasks to the localstorage (for demo data)
+displayTasks();
 displayWeekHeading(0);
 updateTaskQuantity();
