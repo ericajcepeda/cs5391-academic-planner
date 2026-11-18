@@ -3,6 +3,19 @@
 //to help with this, I have included headers followed by forward slashes to help visually seperate the file
 //edit: subheaders will be included as astricks
 
+
+//Decision / Design Change Note:
+// For a period, dictionaries were attempted as the save system to store tasks alongside a id number
+// the dictionaries proved to be a challenge to properly fecth from localstorage json format and 
+// the team determined that overhalling every single function to handle the new set up of the dictionary formats 
+// was simply not worth it for a project of this scope. Instead, id was included as a field of the task object and is initialized and built when the 
+// task item is initilialized (avoiding reinitialazation issues and keeping multiple data structures for the sole purpose of assigning them to dict keys). 
+// Now, we simply save the list of tasks to local storage, and when looking for object we just say "if task.id = (id we are looking for)"
+// The team acknowledges that this system is slightly less efficient than searching for dict keys without looking inside each tasks
+// but the marginal addition to overhead is not a noticible effect on the predicted and intended scale that users will be making tasks (likely <100 objects at a time)
+// this trade off was weighed to be worth it against creating a multitude of problems, and requiring many additional processes within functions and helpers to parse the dict
+
+
 // index.html variable connections
 const prevWeekButton = document.getElementById("prev-week");
 const nextWeekButton = document.getElementById("next-week");
@@ -25,9 +38,10 @@ class Task {
         this.dueDate = dueDate;
         this.notes = notes;}
     
-    initKey(){
+    initKey(self){
         const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
-        task.key = dict_key;
+//       the chance of this system generating two identical ids is practically 0. We can add a function to prevent this, but this addition should be low priority as it is very unlikely to be needed, and failure has minimal stakes 
+        self.key = dict_key;
     }
     add(){
 // planned addition for sprint 2, for adding tasks
@@ -72,15 +86,11 @@ let tasks = [
     sampletask1, sampletask2
 ]
 
-// making a dictionary caused so many problems that we deemed it not worth the additional effort. The preformance impact from the key being a field of a task is going to be minimal for a project of this scope (individual calendar)
-//and a full overhall of all functions to get a dictionary to be integrated is not equivalent to the value it would add
-
 //dictionary initialization (so the tasks in the list can each have an id)
 // function initDictionary(tasklist){
 //     let taskDict = {};
 //     for (let task of tasklist) {
 //         const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
-//         //the chance of this system generating two identical ids is practically 0. We can add a function to prevent this, but this addition should be low priority as it is very unlikely to be needed, and failure has minimal stakes 
 //         taskDict[dict_key] = task;        
 //     }
 //     return taskDict
@@ -91,8 +101,6 @@ function updateTasks(tasklist){ //I didnt strictly use the global variable and i
 }
 
 //puts the fields in the correct format
-//add value to the dictionary
-//alternative: makes a list of the values of the dictionary (since we are only saving the dictionary, not the list) then initialize the dictionary again to ensure it is updated ()
 //within addTask, update tasklist in localstorage
 //display based on local storage
 function addTask(tasklist){
