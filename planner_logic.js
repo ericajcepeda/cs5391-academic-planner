@@ -17,12 +17,18 @@ const taskQuantity = document.getElementById("task-count");
 // TASK SETUP  ///////////////////////////////////////////////////////////////////////
 
 class Task {
-    constructor(title, category, status, dueDate, notes) {
+    constructor(key, title, category, status, dueDate, notes) {
+        this.key = key; //used to identify unique task items
         this.title = title;
         this.category = category;
         this.status = status;
         this.dueDate = dueDate;
         this.notes = notes;}
+    
+    initKey(){
+        const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
+        task.key = dict_key;
+    }
     add(){
 // planned addition for sprint 2, for adding tasks
     }
@@ -45,12 +51,14 @@ function updateTaskQuantity() {
  // need to set up how to remove, and to pair this to the button
 
 const sampletask1 = new Task(
+    "b6c20a7d-5959-47d6-a3ed-f92eb4077cde",//pre generated key using the initKey() func
     "Calculus 2 Worksheet", 
     "Math", 
     "Not Started",
     "2026-10-08", 
     "Need to ask Mr. Park about #3")
 const sampletask2 = new Task(
+    "d3bb8c6f-1b92-4056-a537-617fa5aa00ef", //pre generated key using the initKey() func
     "Shakespeare Powerpoint", 
     "English", 
     "In Progress",
@@ -64,19 +72,22 @@ let tasks = [
     sampletask1, sampletask2
 ]
 
-//dictionary initialization (so the tasks in the list can each have an id)
-function initDictionary(tasklist){
-    let taskDict = {};
-    for (let task of tasklist) {
-        const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
-        //the chance of this system generating two identical ids is practically 0. We can add a function to prevent this, but this addition should be low priority as it is very unlikely to be needed, and failure has minimal stakes 
-        taskDict[dict_key] = task;        
-    }
-    return taskDict
-}
+// making a dictionary caused so many problems that we deemed it not worth the additional effort. The preformance impact from the key being a field of a task is going to be minimal for a project of this scope (individual calendar)
+//and a full overhall of all functions to get a dictionary to be integrated is not equivalent to the value it would add
 
-function updateTasks(taskdict){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
-    localStorage.setItem("tasks", JSON.stringify(taskdict)); //local storage only holds strings
+//dictionary initialization (so the tasks in the list can each have an id)
+// function initDictionary(tasklist){
+//     let taskDict = {};
+//     for (let task of tasklist) {
+//         const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
+//         //the chance of this system generating two identical ids is practically 0. We can add a function to prevent this, but this addition should be low priority as it is very unlikely to be needed, and failure has minimal stakes 
+//         taskDict[dict_key] = task;        
+//     }
+//     return taskDict
+// }
+
+function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
+    localStorage.setItem("tasks", JSON.stringify(tasklist)); //local storage only holds strings
 }
 
 //puts the fields in the correct format
@@ -94,13 +105,10 @@ function addTask(tasklist){
 //add event listener that waits for the submission of the task form
 
 
-function displayTasks() {
-    const saveData = localStorage.getItem('tasks'); //pull data
-    const taskDict = saveData ? JSON.parse(saveData) : {}; //unstringify it
-
+function displayTasks(tasklist) {
     taskList.innerHTML = "";
     //use the attributes of the tasks to make an element
-    for (const val of Object.values(taskDict)) { //this should loop through the collection of values just like before
+    for (let task of tasklist) {
         const taskElement = document.createElement("div");
         taskElement.classList.add("task");
 
@@ -343,7 +351,6 @@ function displayCalendar(week){
     }
 }
 
-initDictionary(tasks);
 displayTasks(tasks);
 displayWeekHeading(0);
 updateTaskQuantity();
