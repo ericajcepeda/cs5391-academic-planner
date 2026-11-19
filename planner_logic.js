@@ -30,13 +30,17 @@ const taskQuantity = document.getElementById("task-count");
 // TASK SETUP  ///////////////////////////////////////////////////////////////////////
 
 class Task {
-    constructor(key, title, category, status, dueDate, notes) {
+    constructor(key, title, category, status, priority, dueDate, dueTime, notes) {
         this.key = key; //used to identify unique task items
         this.title = title;
         this.category = category;
         this.status = status;
+        this.priority = priority;
         this.dueDate = dueDate;
-        this.notes = notes;}
+        this.dueTime = dueTime;
+        this.notes = notes;
+        
+    }
     
     initKey(self){
         const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
@@ -62,14 +66,18 @@ const sampletask1 = new Task(
     "Calculus 2 Worksheet", 
     "Math", 
     "Not Started",
+    "11:59 PM",
     "2026-10-08", 
+    "Medium",
     "Need to ask Mr. Park about #3")
 const sampletask2 = new Task(
     "d3bb8c6f-1b92-4056-a537-617fa5aa00ef", //pre generated key using the initKey() func
     "Shakespeare Powerpoint", 
     "English", 
     "In Progress",
+    "Medium",
     "2026-10-09", 
+    "5:00 PM",
     "Mary Hata is available to work on Wed")
 
 //(these are used in the task list)
