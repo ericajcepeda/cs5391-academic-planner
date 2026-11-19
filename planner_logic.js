@@ -43,15 +43,8 @@ class Task {
 //       the chance of this system generating two identical ids is practically 0. We can add a function to prevent this, but this addition should be low priority as it is very unlikely to be needed, and failure has minimal stakes 
         self.key = dict_key;
     }
-    add(){
-// planned addition for sprint 2, for adding tasks
-    }
-    delete(){
-// planned addition for sprint 2, for removing tasks
-    }
-    edit(){
-// planned addition for future sprint, for editting tasks
-    }
+    //add() and delete(), which were originally planned to be within this structure, proved more useful outside of it.
+    //both functions can be found below alongside updateTasks
 }
 
 function updateTaskQuantity() {
@@ -103,8 +96,10 @@ function updateTasks(tasklist){ //I didnt strictly use the global variable and i
 //puts the fields in the correct format
 //within addTask, update tasklist in localstorage
 //display based on local storage
-function addTask(tasklist){
-
+function addTask(){
+    const rawtasklist = localStorage.getItem("tasks");
+    const tasklist = JSON.parse(rawtasklist) || [];
+    new_task =
 }
 
 
