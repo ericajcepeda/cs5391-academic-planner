@@ -17,8 +17,13 @@ Tasks, milestones, and progress are tracked through our [Jira Project Board](htt
 
 
 ### Sources
+
+
+#### Lain Bowman's Sources (Backend)
 https://www.technologyuk.net/website-development/introduction-to-javascript/javascript-working-with-dates-and-times.shtml
 
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
 
 https://medium.com/@wachirasilvia8/adding-items-to-the-local-storage-9c7bb31f209 
+
+https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID
