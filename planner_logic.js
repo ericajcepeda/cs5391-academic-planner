@@ -53,8 +53,8 @@ function initKey() {
     return dict_key;
     }
 
-function updateTaskQuantity() {
-    taskQuantity.innerHTML = tasks.length;
+function updateTaskQuantity(tasklist) {
+    taskQuantity.innerHTML = tasklist.length;
 }
 
 // Sample data setup ****************************************************
@@ -121,6 +121,7 @@ function addTask(taskObj){
     const tasklist = JSON.parse(rawtasklist) || [];
     tasklist.push(taskObj)
     updateTasks(tasklist) //write the tasks to local storage again 
+    updateTaskQuantity(tasklist)
 }
 
 //get task data from form
@@ -418,7 +419,7 @@ function displayCalendar(week){
         //fetch the tasks
         const rawtasklist = localStorage.getItem("tasks");
         const tasklist = JSON.parse(rawtasklist) || [];
-
+        updateTaskQuantity(tasklist);
         const tasksDueOnDay = tasklist.filter(function(task) {
             return task.dueDate === dateString;
         });
@@ -435,7 +436,23 @@ function displayCalendar(week){
     }
 }
 
+//clear data
+const resetButton = document.getElementById("reset-button");
+
+resetButton.addEventListener("click", function(){
+    // it would be best to add a warning pop up 
+    localStorage.clear();
+    });
+
+//load demo 
+const demoDataButton = document.getElementById("sample-button");
+
+demoDataButton.addEventListener("click", function(){
+    // it would be best to add a warning pop up 
+    localStorage.setItem("tasks", JSON.stringify(tasks)); //this is now refferencing the global list
+    displayTasks();
+    });
+
 //LETS GET THIS PARTY STARTED! 
 displayTasks();
 displayWeekHeading(0);
-updateTaskQuantity();
