@@ -9,6 +9,7 @@
   <!-- SPRINT 2 UI: load after Sprint 1 styles so these additions take priority.
        Lain's existing calendar and task CSS remains unchanged. -->
   <link rel="stylesheet" href="sprint2_ui.css">
+  <link rel="stylesheet" href="backend_additions.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to planner</a>
@@ -198,8 +199,10 @@
       <button type="button" class="task-action task-action-delete" data-action="delete">Delete</button>
     </div>
   </template>
-
+<!-- note: this is the module moment, and it was the most efficent way for us to identify and calculate dates for this project -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
   <!-- SPRINT 1 logic remains unchanged. Sprint 2 task behavior is Lain's scope. -->
   <script src="planner_logic.js"></script>
+  
 </body>
 </html>

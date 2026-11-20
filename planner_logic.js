@@ -157,22 +157,22 @@ function displayTasks() {
         const title = document.createElement("h3"); //these labels can be updated to match UI in future sprint
         title.textContent = task.title;
 
-        const category = document.createElement("h4");
-        category.textContent = task.category;
+        const courseandtype = document.createElement("h4");
+        courseandtype.textContent = `${task.course} • ${task.category}`;
 
-        const status = document.createElement("h5");
-        status.textContent = task.status;
+        const priorgency = document.createElement("h5");
+        priorgency.textContent = `${task.status} • Priority: ${task.priority}`;
 
-        const dueDate = document.createElement("p");
-        dueDate.textContent = `Due ${task.dueDate}`;
+        const due = document.createElement("p");
+        due.textContent = `Due ${task.dueDate} at ${task.dueTime}`;
 
-        const notes = document.createElement("h5");
+        const notes = document.createElement("h6");
         notes.textContent = task.notes;
 
         taskElement.appendChild(title);
-        taskElement.appendChild(category);
-        taskElement.appendChild(status);
-        taskElement.appendChild(dueDate);
+        taskElement.appendChild(courseandtype);
+        taskElement.appendChild(priorgency);
+        taskElement.appendChild(due);
         taskElement.appendChild(notes);
 
         taskList.appendChild(taskElement);
@@ -243,46 +243,76 @@ let currentWeek = 0; //starts at 0
 //currently, the weeks are static as a proof of concept for the first sprint, to get things set up. 
 // in later iterations, these dates will be pulled 
 
+
+function find_start_date(x){
+    const today = moment().format('YYYY-MM-DD');
+    var week_multi = x -1;
+    var week_add = week_multi * 7
+    const start_week = moment().add(week_add, 'days').format('YYYY-MM-DD')
+    return start_week
+}
+
+function find_end_week(x){
+    const today = moment().format('YYYY-MM-DD');
+    var week_multi = x -1;
+    var week_add = week_multi * 7
+    var week_end = week_add + 6 //for end of the week
+    const end_week = moment().add(week_end, 'days').format('YYYY-MM-DD')
+    return end_week
+}
+
+
+//     const d = new Date();
+//     let day = d.getDate();
+//     let month = d.getMonth();
+//     let year = d.getFullYear();
+//     let end_week = d.getDate() + 7;
+//     console.log(end_week)
+// }
+console.log(find_start_date(2))
+console.log(find_end_week(2))
+
+
 const weeks = [
     {
         week: 1,
-        start: "2026-10-08",
-        end: "2026-10-14"
+        start: find_start_date(1),
+        end: find_end_week(1)
     },
     {
         week: 2,
-        start: "2026-10-15",
-        end: "2026-10-21"
+        start: find_start_date(2),
+        end: find_end_week(2)
     },
     {
         week: 3,
-        start: "2026-10-22",
-        end: "2026-10-28"
+        start: find_start_date(3),
+        end: find_end_week(3)
     },
     {
         week: 4,
-        start: "2026-10-29",
-        end: "2026-11-04"
+        start: find_start_date(4),
+        end: find_end_week(4)
     },
     {
         week: 5,
-        start: "2026-11-05",
-        end: "2026-11-11"
+        start: find_start_date(5),
+        end: find_end_week(5)
     },
     {
         week: 6,
-        start: "2026-11-12",
-        end: "2026-11-18"
+        start: find_start_date(6),
+        end: find_end_week(6)
     },
     {
         week: 7,
-        start: "2026-11-19",
-        end: "2026-11-25"
+        start: find_start_date(7),
+        end: find_end_week(7)
     },
     {
         week: 8,
-        start: "2026-11-26",
-        end: "2026-12-02"
+        start: find_start_date(8),
+        end: find_end_week(8)
     }
 ];
 
@@ -374,7 +404,6 @@ function displayCalendar(week){
         //day / date displayed
         dayHeading.appendChild(weekdayName); // day of week
         dayHeading.appendChild(dateText);  //   date (ex. October 5)
-
         
         //task display (within day)
         const body = document.createElement("div");
@@ -400,7 +429,6 @@ function displayCalendar(week){
 }
 
 //LETS GET THIS PARTY STARTED! 
-updateTasks(tasks); //this starts by saving the initial tasks to the localstorage (for demo data)
 displayTasks();
 displayWeekHeading(0);
 updateTaskQuantity();
