@@ -82,7 +82,7 @@
       <div><p class="editor-kicker">Academic Planner</p><h2 id="task-editor-title">Add assignment</h2></div>
       <button type="button" class="editor-dismiss" popovertarget="task-editor" popovertargetaction="hide" aria-label="Close assignment form">×</button>
     </div>
-    <form id="task-form" novalidate>
+    <form id="task-form" >
       <!-- New tasks have no ID until JS creates one. For editing, JS can populate this value. -->
       <input type="hidden" id="task-id" name="taskId">
       <div class="editor-field">
@@ -157,7 +157,7 @@
       <div class="editor-actions">
         <button type="button" class="button button-outline" popovertarget="task-editor" popovertargetaction="hide">Cancel</button>
         <!-- Intentionally disabled: saving must not pretend to work until JS is connected. -->
-        <button type="button" class="button button-primary" id="save-task" disabled>Save assignment</button>
+        <button type="submit" class="button button-primary" id="save-task" >Save assignment</button>
       </div>
     </form>
   </section>

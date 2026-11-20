@@ -27,3 +27,5 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 https://medium.com/@wachirasilvia8/adding-items-to-the-local-storage-9c7bb31f209 
 
 https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID
+
+https://stackoverflow.com/questions/3547035/getting-html-form-values
