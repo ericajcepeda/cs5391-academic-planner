@@ -30,9 +30,10 @@ const taskQuantity = document.getElementById("task-count");
 // TASK SETUP  ///////////////////////////////////////////////////////////////////////
 
 class Task {
-    constructor(key, title, category, status, priority, dueDate, dueTime, notes) {
+    constructor(key, title, course, category, status, priority, dueDate, dueTime, notes) {
         this.key = key; //used to identify unique task items
         this.title = title;
+        this.course = course;
         this.category = category;
         this.status = status;
         this.priority = priority;
@@ -41,15 +42,16 @@ class Task {
         this.notes = notes;
         
     }
-    
-    initKey(self){
-        const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
-//       the chance of this system generating two identical ids is practically 0. We can add a function to prevent this, but this addition should be low priority as it is very unlikely to be needed, and failure has minimal stakes 
-        self.key = dict_key;
-    }
+
     //add() and delete(), which were originally planned to be within this structure, proved more useful outside of it.
     //both functions can be found below alongside updateTasks
 }
+    
+function initKey() {
+    const dict_key = crypto.randomUUID(); //this uses the crypto module to generate a task id (36 char long)
+//       the chance of this system generating two identical ids is practically 0. We can add a function to prevent this, but this addition should be low priority as it is very unlikely to be needed, and failure has minimal stakes 
+    return dict_key;
+    }
 
 function updateTaskQuantity() {
     taskQuantity.innerHTML = tasks.length;
@@ -65,15 +67,17 @@ const sampletask1 = new Task(
     "b6c20a7d-5959-47d6-a3ed-f92eb4077cde",//pre generated key using the initKey() func
     "Calculus 2 Worksheet", 
     "Math", 
+    "Other",
     "Not Started",
-    "11:59 PM",
-    "2026-10-08", 
     "Medium",
+    "2026-10-08", 
+    "11:59 PM",
     "Need to ask Mr. Park about #3")
 const sampletask2 = new Task(
     "d3bb8c6f-1b92-4056-a537-617fa5aa00ef", //pre generated key using the initKey() func
     "Shakespeare Powerpoint", 
     "English", 
+    "Project",
     "In Progress",
     "Medium",
     "2026-10-09", 
@@ -99,16 +103,39 @@ let tasks = [
 
 function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
     localStorage.setItem("tasks", JSON.stringify(tasklist)); //local storage only holds strings
+    displayTasks();
 }
 
 //puts the fields in the correct format
 //within addTask, update tasklist in localstorage
 //display based on local storage
-function addTask(){
+function addTask(taskObj){
     const rawtasklist = localStorage.getItem("tasks");
     const tasklist = JSON.parse(rawtasklist) || [];
-    new_task =
+    tasklist.push(taskObj)
+    updateTasks(tasklist) //write the tasks to local storage again 
 }
+
+//get task data from form
+const form = document.getElementById('task-form');
+
+form.addEventListener('submit', (event) => {
+    event.preventDefault(); //this just prevents a page reload we may not need this
+    const taskData = new FormData(form); //uses formData to get the fields
+    const data = Object.fromEntries(taskData.entries()); //this in intended to pull in each field
+    key = initKey(); //makes a new key to be used
+    title = data.title;
+    course = data.course;
+    category = data.assignmentType;
+    stat = "Not Started"; //cannot use status
+    priority = data.priority;
+    dueDate = data.dueDate;
+    dueTime = data.dueTime;
+    notes = data.notes;
+    newTask = new Task(key, title, course, category, stat, priority, dueDate, dueTime, notes);
+    addTask(newTask);
+    }
+)
 
 
 //DISPLAYING TASK LIST ////////////////////////////////////////////
