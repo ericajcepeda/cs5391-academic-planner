@@ -123,13 +123,20 @@ a{color:var(--maroon)}
 
 .task h4 {
   color: #755f37;
-  font-size: 12px;
+  font-size: 14px;
   margin: 0 0 6px;
 }
 
 .task h5 {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: normal;
+  margin: 6px 0;
+}
+
+.task h6 {
+  color: var(--muted);
+  font-size: 11px;
   font-weight: normal;
   margin: 6px 0;
 }

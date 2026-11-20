@@ -29,3 +29,11 @@ https://medium.com/@wachirasilvia8/adding-items-to-the-local-storage-9c7bb31f209
 https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID
 
 https://stackoverflow.com/questions/3547035/getting-html-form-values
+
+https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_pill_button
+
+References for Moment module 
+
+https://stackoverflow.com/questions/19957308/subtract-1-week-from-current-date-javascript
+
+https://momentjs.com/
