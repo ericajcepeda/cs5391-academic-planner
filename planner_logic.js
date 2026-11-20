@@ -70,9 +70,16 @@ const sampletask1 = new Task(
     "Other",
     "Not Started",
     "Medium",
-    "2026-10-08", 
+    find_start_date(1), //this ensures the task will always be on the first day of the week for a user
     "11:59 PM",
     "Need to ask Mr. Park about #3")
+    
+function demodatecalc(){
+    weekstart = find_start_date(1)
+    const duedate2 = moment().add(2, weekstart).format('YYYY-MM-DD')
+    return duedate2
+}
+
 const sampletask2 = new Task(
     "d3bb8c6f-1b92-4056-a537-617fa5aa00ef", //pre generated key using the initKey() func
     "Shakespeare Powerpoint", 
@@ -80,7 +87,7 @@ const sampletask2 = new Task(
     "Project",
     "In Progress",
     "Medium",
-    "2026-10-09", 
+    demodatecalc(), 
     "5:00 PM",
     "Mary Hata is available to work on Wed")
 
