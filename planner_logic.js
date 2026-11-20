@@ -111,6 +111,7 @@ let tasks = [
 function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
     localStorage.setItem("tasks", JSON.stringify(tasklist)); //local storage only holds strings
     displayTasks();
+    displayCalendar();
 }
 
 //puts the fields in the correct format
