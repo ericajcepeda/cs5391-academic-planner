@@ -37,3 +37,5 @@ References for Moment module
 https://stackoverflow.com/questions/19957308/subtract-1-week-from-current-date-javascript
 
 https://momentjs.com/
+
+https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
