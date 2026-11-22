@@ -442,7 +442,10 @@ const resetButton = document.getElementById("reset-button");
 
 resetButton.addEventListener("click", function(){
     // it would be best to add a warning pop up 
-    localStorage.clear();
+    // localStorage.clear();
+    emptytasks = []
+    //leaves the "tasks" key active
+    updateTasks(emptytasks);
     });
 
 //load demo 
