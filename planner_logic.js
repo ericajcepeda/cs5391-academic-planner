@@ -76,7 +76,7 @@ const sampletask1 = new Task(
     
 function demodatecalc(){
     weekstart = find_start_date(1)
-    const duedate2 = moment().add(2, weekstart).format('YYYY-MM-DD')
+    const duedate2 = moment().add(2, 'days').format('YYYY-MM-DD')
     return duedate2
 }
 
@@ -228,7 +228,7 @@ filterCompleted.addEventListener("click", function() {
 
 filterUpcoming.addEventListener("click", function() {
     let filteredTasks = []
-    for (const task of tasks){
+    for (let task of tasks){
         if (task.status != "Complete"){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is after currentDate
             filteredTasks.push(task);
     }};
@@ -241,8 +241,9 @@ filterUpcoming.addEventListener("click", function() {
 
 filterOverdue.addEventListener("click", function() {
     let filteredTasks = []
-    for (const task of tasks){
-        if (task.status != "Complete" && task.dueDate == "2026-10-05"){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is before current date
+    for (let task of tasks){
+        formatedduedate = moment(task.dueDate)
+        if (task.status != "Complete" && formatDate.isBefore(moment())){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is before current date
             filteredTasks.push(task);
     }};
     displayTasks();
@@ -470,7 +471,6 @@ console.log(delbuttons);
 console.log(delbuttons.length);
 
 delbuttons.forEach(button => button.addEventListener('click', (event) => {
-    console.log("hi")
     let targetkey = button.id;
     const rawtasklist = localStorage.getItem("tasks");
     const tasklist = JSON.parse(rawtasklist) || [];
