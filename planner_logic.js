@@ -118,8 +118,7 @@ function updateTasks(tasklist){ //I didnt strictly use the global variable and i
 //within addTask, update tasklist in localstorage
 //display based on local storage
 function addTask(taskObj){
-    const rawtasklist = localStorage.getItem("tasks");
-    const tasklist = JSON.parse(rawtasklist) || [];
+    const tasklist = pullstoredlist();
     tasklist.push(taskObj)
     updateTasks(tasklist) //write the tasks to local storage again 
     updateTaskQuantity(tasklist)
@@ -194,6 +193,8 @@ function displayTasks(tasklist) {
 
         taskList.appendChild(taskElement);
     }
+    
+    loadbuttons();
 }
 
 
@@ -283,14 +284,6 @@ function find_end_week(x){
     return end_week
 }
 
-
-//     const d = new Date();
-//     let day = d.getDate();
-//     let month = d.getMonth();
-//     let year = d.getFullYear();
-//     let end_week = d.getDate() + 7;
-//     console.log(end_week)
-// }
 console.log(find_start_date(2))
 console.log(find_end_week(2))
 
@@ -422,8 +415,7 @@ function displayCalendar(week){
         const body = document.createElement("div");
         body.classList.add("day-body");
         //fetch the tasks
-        const rawtasklist = localStorage.getItem("tasks");
-        const tasklist = JSON.parse(rawtasklist) || [];
+        const tasklist = pullstoredlist();
         updateTaskQuantity(tasklist);
         const tasksDueOnDay = tasklist.filter(function(task) {
             return task.dueDate === dateString;
@@ -470,22 +462,21 @@ displayTasks(pullstoredlist());
 displayWeekHeading(0);
 
 
-const delbuttons = document.querySelectorAll(".del-btn")
-console.log(delbuttons);
-console.log(delbuttons.length);
 
-delbuttons.forEach(button => button.addEventListener('click', (event) => {
-    let targetkey = button.id;
-    const rawtasklist = localStorage.getItem("tasks");
-    const tasklist = JSON.parse(rawtasklist) || [];
-    for (let task of tasklist){
-        if (task.key == targetkey){
-            const index = tasklist.indexOf(task);
-            if (index > -1) { // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
-                tasklist.splice(index, 1); // remove on item (task) at index
+function loadbuttons(){
+    const delbuttons = document.querySelectorAll(".del-btn")
+    delbuttons.forEach(button => button.addEventListener('click', (event) => {
+        let targetkey = button.id;
+        const rawtasklist = localStorage.getItem("tasks");
+        const tasklist = JSON.parse(rawtasklist) || [];
+        for (let task of tasklist){
+            if (task.key == targetkey){
+                const index = tasklist.indexOf(task);
+                if (index > -1) { // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
+                    tasklist.splice(index, 1); // remove on item (task) at index
+                }
             }
         }
-    }
-    updateTasks(tasklist); //reload the tasks with an updated list
+        updateTasks(tasklist); //reload the tasks with an updated list
 
-  }));
+    }))};
