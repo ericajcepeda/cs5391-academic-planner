@@ -71,7 +71,7 @@ const sampletask1 = new Task(
     "Not Started",
     "Medium",
     find_start_date(1), //this ensures the task will always be on the first day of the week for a user
-    "11:59",
+    "23:59",
     "Need to ask Mr. Park about #3")
     
 function demodatecalc(){
@@ -88,7 +88,7 @@ const sampletask2 = new Task(
     "In Progress",
     "Medium",
     demodatecalc(), 
-    "5:00",
+    "17:00",
     "Mary Hata is available to work on Wed")
 
 //(these are used in the task list)
@@ -110,7 +110,7 @@ let tasks = [
 
 function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
     localStorage.setItem("tasks", JSON.stringify(tasklist)); //local storage only holds strings
-    displayTasks();
+    displayTasks(pullstoredlist());
     displayCalendar(weeks[0]);
 }
 
@@ -150,13 +150,14 @@ form.addEventListener('submit', (event) => {
 //DISPLAYING TASK LIST ////////////////////////////////////////////
 
 //add event listener that waits for the submission of the task form
-
-
-function displayTasks() {
-    //fetching data
+function pullstoredlist(){
     const rawtasklist = localStorage.getItem("tasks");
     const tasklist = JSON.parse(rawtasklist) || [];
+    return tasklist;
+}
 
+function displayTasks(tasklist) {
+    //fetching data
     taskList.innerHTML = "";
     //use the attributes of the tasks to make an element
     for (let task of tasklist) {
@@ -205,21 +206,21 @@ const filterUpcoming = document.getElementById("upcoming-filter")
 
 
 filterAll.addEventListener("click", function() {
-    displayTasks(); //just display full list of tasks
+    displayTasks(pullstoredlist()); //just display full list of tasks
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
-    
     filterAll.classList.add("active");
 })
 
 filterCompleted.addEventListener("click", function() {
+    let tasklist = pullstoredlist()
     let filteredTasks = []
-    for (const task of tasks){
+    for (const task of tasklist){
         if (task.status == "Complete"){ 
             filteredTasks.push(task);
     }};
-    displayTasks();
+    displayTasks(filteredTasks);
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
@@ -228,11 +229,13 @@ filterCompleted.addEventListener("click", function() {
 
 filterUpcoming.addEventListener("click", function() {
     let filteredTasks = []
-    for (let task of tasks){
-        if (task.status != "Complete"){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is after currentDate
+    let tasklist = pullstoredlist()
+    for (const task of tasks){
+        let formattedduedate = moment(task.dueDate)
+        if (task.status != "Complete" && formattedduedate.isAfter(moment())){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is after currentDate
             filteredTasks.push(task);
     }};
-    displayTasks();
+    displayTasks(filteredTasks);
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
@@ -241,12 +244,13 @@ filterUpcoming.addEventListener("click", function() {
 
 filterOverdue.addEventListener("click", function() {
     let filteredTasks = []
-    for (let task of tasks){
-        formatedduedate = moment(task.dueDate)
-        if (task.status != "Complete" && formatDate.isBefore(moment())){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is before current date
+    let tasklist = pullstoredlist()
+    for (let task of tasklist){
+        let formattedduedate = moment(task.dueDate)
+        if (task.status != "Complete" && formattedduedate.isBefore(moment())){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is before current date
             filteredTasks.push(task);
     }};
-    displayTasks();
+    displayTasks(filteredTasks);
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
@@ -462,7 +466,7 @@ demoDataButton.addEventListener("click", function(){
     });
 
 //LETS GET THIS PARTY STARTED! 
-displayTasks();
+displayTasks(pullstoredlist());
 displayWeekHeading(0);
 
 
