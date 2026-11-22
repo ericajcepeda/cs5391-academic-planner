@@ -71,7 +71,7 @@ const sampletask1 = new Task(
     "Not Started",
     "Medium",
     find_start_date(1), //this ensures the task will always be on the first day of the week for a user
-    "11:59 PM",
+    "11:59",
     "Need to ask Mr. Park about #3")
     
 function demodatecalc(){
@@ -88,7 +88,7 @@ const sampletask2 = new Task(
     "In Progress",
     "Medium",
     demodatecalc(), 
-    "5:00 PM",
+    "5:00",
     "Mary Hata is available to work on Wed")
 
 //(these are used in the task list)
@@ -111,7 +111,7 @@ let tasks = [
 function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
     localStorage.setItem("tasks", JSON.stringify(tasklist)); //local storage only holds strings
     displayTasks();
-    displayCalendar();
+    displayCalendar(weeks[0]);
 }
 
 //puts the fields in the correct format
@@ -178,11 +178,18 @@ function displayTasks() {
         const notes = document.createElement("h6");
         notes.textContent = task.notes;
 
+        const delbutton = document.createElement('button');
+        delbutton.textContent = `[X]`;
+        delbutton.className = 'del-btn';
+        delbutton.id = task.key;
+        //need to add a popup check
+
         taskElement.appendChild(title);
         taskElement.appendChild(courseandtype);
         taskElement.appendChild(priorgency);
         taskElement.appendChild(due);
         taskElement.appendChild(notes);
+        taskElement.appendChild(delbutton);
 
         taskList.appendChild(taskElement);
     }
@@ -198,10 +205,11 @@ const filterUpcoming = document.getElementById("upcoming-filter")
 
 
 filterAll.addEventListener("click", function() {
-    displayTasks(tasks); //just display full list of tasks
+    displayTasks(); //just display full list of tasks
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
+    
     filterAll.classList.add("active");
 })
 
@@ -211,7 +219,7 @@ filterCompleted.addEventListener("click", function() {
         if (task.status == "Complete"){ 
             filteredTasks.push(task);
     }};
-    displayTasks(filteredTasks);
+    displayTasks();
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
@@ -224,7 +232,7 @@ filterUpcoming.addEventListener("click", function() {
         if (task.status != "Complete"){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is after currentDate
             filteredTasks.push(task);
     }};
-    displayTasks(filteredTasks);
+    displayTasks();
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
@@ -237,7 +245,7 @@ filterOverdue.addEventListener("click", function() {
         if (task.status != "Complete" && task.dueDate == "2026-10-05"){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is before current date
             filteredTasks.push(task);
     }};
-    displayTasks(filteredTasks);
+    displayTasks();
     //remove active from previous button
     filterButtons.forEach(button => button.classList.remove('active'));
     //add active to clicked tab
@@ -372,15 +380,6 @@ prevWeekButton.addEventListener("click", function(){
     displayWeekHeading(prevWeekNo)
     });
 
-    //at the moment, this logic seems not essential, but I would like to keep it included for next sprint. 
-    // if (prevWeekNo < 0){
-    //     displayWeekHeading(0)
-    // };  //if you are already on the current week, you cannot go further back. 
-    //     //We may decide to change this in a future sprint to be mroe similar to the style of Apple Calendar or Google Calendar 
-    //     //where you can view previous points in time, but for now this is straight forward and makes sense
-    // else{
-    //     displayWeekHeading(prevWeekNo);
-    // };
 
 // Display calendar by week *************************************************************
 
@@ -438,6 +437,7 @@ function displayCalendar(week){
 }
 
 //clear data
+// uses: const taskList = document.getElementById('task-list');
 const resetButton = document.getElementById("reset-button");
 
 resetButton.addEventListener("click", function(){
@@ -451,9 +451,34 @@ const demoDataButton = document.getElementById("sample-button");
 demoDataButton.addEventListener("click", function(){
     // it would be best to add a warning pop up 
     localStorage.setItem("tasks", JSON.stringify(tasks)); //this is now refferencing the global list
-    displayTasks();
+    updateTasks(tasks)
+    weekTabs.forEach(wTab => wTab.classList.remove('active'));
+    displayWeekHeading(0);
+
     });
 
 //LETS GET THIS PARTY STARTED! 
 displayTasks();
 displayWeekHeading(0);
+
+
+const delbuttons = document.querySelectorAll(".del-btn")
+console.log(delbuttons);
+console.log(delbuttons.length);
+
+delbuttons.forEach(button => button.addEventListener('click', (event) => {
+    console.log("hi")
+    let targetkey = button.id;
+    const rawtasklist = localStorage.getItem("tasks");
+    const tasklist = JSON.parse(rawtasklist) || [];
+    for (let task of tasklist){
+        if (task.key == targetkey){
+            const index = tasklist.indexOf(task);
+            if (index > -1) { // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
+                tasklist.splice(index, 1); // remove on item (task) at index
+            }
+        }
+    }
+    updateTasks(tasklist); //reload the tasks with an updated list
+
+  }));
