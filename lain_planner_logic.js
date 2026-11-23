@@ -1,3 +1,5 @@
+//Update Note: due to a conflict, this file serves as a reference point for Ericas backend changes. She will attempt to incldue functions from these files 
+
 //Note: This document contains scripts for task set up and calendar display. In the future, it may be best
 //to figure out a way to seperate these into two files as it quickly has become cumbersome to navigate
 //to help with this, I have included headers followed by forward slashes to help visually seperate the file
