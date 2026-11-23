@@ -9,7 +9,9 @@
   <!-- SPRINT 2 UI: load after Sprint 1 styles so these additions take priority.
        Lain's existing calendar and task CSS remains unchanged. -->
   <link rel="stylesheet" href="sprint2_ui.css">
-  <link rel="stylesheet" href="backend_additions.css">
+  <link rel="stylesheet" href="sprint3_ui.css">
+  <link rel="stylesheet" href="calendar_views.css">
+  <link rel="stylesheet" href="planner_extras.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to planner</a>
@@ -27,21 +29,37 @@
     <div class="page-intro">
       <div class="intro-actions">
         <button class="button button-secondary" type="button" id="sample-button"  title="sample data load">Load Sample Data</button>
-        <button class="button button-outline" type="button" id="reset-button" title="To be implemented with Lain">Reset</button>
+        <button class="button button-outline" type="button" id="reset-button">Reset</button>
+        <button class="button button-outline" type="button" id="export-tasks">Export</button>
+        <button class="button button-outline" type="button" id="import-tasks">Import</button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden>
       </div>
     </div>
+    <section class="card progress-panel" aria-labelledby="progress-heading">
+      <h2 id="progress-heading">Your academic progress</h2>
+      <div class="progress-stats" id="progress-stats"></div>
+      <label for="completion-progress">Assignment completion <span id="progress-percent"></span></label>
+      <progress id="completion-progress" max="100" value="0"></progress>
+    </section>
     <div class="dashboard">
       <section class="card calendar-section" aria-labelledby="calendar-heading">
         <div class="section-top"><div><h2 id="calendar-heading">Academic calendar</h2></div></div>
+        <div class="term-controls"><label for="term-start">Term start (optional)</label><input type="date" id="term-start"><button type="button" id="clear-term" class="button button-outline">Rolling weeks</button></div>
+        <div class="calendar-view-controls" role="group" aria-label="Calendar view">
+          <button type="button" data-view="week" aria-pressed="true">8-week</button>
+          <button type="button" data-view="month" aria-pressed="false">Month</button>
+          <button type="button" data-view="day" aria-pressed="false">Day</button>
+          <button type="button" id="calendar-today">Today</button>
+        </div>
         <nav class="week-selector" aria-label="Choose a planning week" id="week-tabs">
-          <button id="wTab" type="button" class="week-tab active" aria-current="true" data-week="0">W1</button>
-          <button id="wTab" type="button" class="week-tab" data-week="1">W2</button>
-          <button id="wTab" type="button" class="week-tab" data-week="2">W3</button>
-          <button id="wTab" type="button" class="week-tab" data-week="3">W4</button>
-          <button id="wTab" type="button" class="week-tab" data-week="4">W5</button>
-          <button id="wTab" type="button" class="week-tab" data-week="5">W6</button>
-          <button id="wTab" type="button" class="week-tab" data-week="6">W7</button>
-          <button id="wTab" type="button" class="week-tab" data-week="7">W8</button>
+          <button type="button" class="week-tab active" aria-current="true" data-week="0">W1</button>
+          <button type="button" class="week-tab" data-week="1">W2</button>
+          <button type="button" class="week-tab" data-week="2">W3</button>
+          <button type="button" class="week-tab" data-week="3">W4</button>
+          <button type="button" class="week-tab" data-week="4">W5</button>
+          <button type="button" class="week-tab" data-week="5">W6</button>
+          <button type="button" class="week-tab" data-week="6">W7</button>
+          <button type="button" class="week-tab" data-week="7">W8</button>
         </nav>
         <div class="calendar-toolbar"><button class="icon-button" type="button" id="prev-week" aria-label="Previous week">←</button>
           <div class="week-title" aria-live="polite">
@@ -59,7 +77,18 @@
                Lain can later keep this control or bind her preferred event handler. -->
           <button type="button" class="button button-primary" id="add-task" popovertarget="task-editor" aria-haspopup="dialog">+ Add task</button>
         </div>
-        <label class="sr-only" for="task-search">Search assignments</label><input id="task-search" disabled title="To be connected to task logic" class="search-input" type="search" placeholder="Search assignments…" autocomplete="off">
+        <label class="sr-only" for="task-search">Search assignments</label><input id="task-search" class="search-input" type="search" placeholder="Search assignments…" autocomplete="off">
+        <label class="course-filter-label" for="course-filter">Course</label>
+        <select id="course-filter" class="planner-select"><option value="">All courses</option></select>
+        <label class="course-filter-label" for="priority-filter">Priority</label>
+        <select id="priority-filter" class="planner-select">
+          <option value="">All priorities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <label class="course-filter-label" for="type-filter">Assignment type</label>
+        <select id="type-filter" class="planner-select"><option value="">All types</option></select>
         <div class="filter-row" role="group" aria-label="Filter assignments">
         <button id="all-filter" type="button" class="filter active" data-filter="all" aria-pressed="true">All</button>
         <button id="upcoming-filter" type="button" class="filter" data-filter="upcoming" aria-pressed="false">Upcoming</button>
@@ -67,7 +96,9 @@
         <button id="overdue-filter" type="button" class="filter" data-filter="overdue" aria-pressed="false">Overdue</button></div>
         <!-- SPRINT 1: Lain's displayTasks() fills this node with .task elements.
              Do not put static examples here or they will be replaced on every redraw. -->
-        <div id="task-list" class="task-list" aria-live="polite"></div>
+        <p id="filter-summary" class="filter-summary" role="status"></p>
+        <p id="planner-message" class="planner-message" role="status"></p>
+        <div id="task-list" class="task-list"></div>
       </section>
     </div>
   </main>
@@ -83,7 +114,7 @@
       <div><p class="editor-kicker">Academic Planner</p><h2 id="task-editor-title">Add assignment</h2></div>
       <button type="button" class="editor-dismiss" popovertarget="task-editor" popovertargetaction="hide" aria-label="Close assignment form">×</button>
     </div>
-    <form id="task-form" >
+    <form id="task-form" novalidate>
       <!-- New tasks have no ID until JS creates one. For editing, JS can populate this value. -->
       <input type="hidden" id="task-id" name="taskId">
       <div class="editor-field">
@@ -144,13 +175,23 @@
         <div class="editor-field">
           <label for="task-due-time">Due time <span class="required-mark" aria-hidden="true">*</span></label>
           <input id="task-due-time" name="dueTime" type="time" value="23:59" required aria-describedby="task-time-hint task-due-time-error">
-          <p class="field-hint" id="task-time-hint">Defaults to 11:59 PM. Change it for 5 PM or other deadlines.</p>
+          <p class="field-hint" id="task-time-hint">Defaults to 11:59 PM. Times use your device's local time zone.</p>
           <p class="field-error" id="task-due-time-error" role="alert" hidden>Choose a valid due time.</p>
         </div>
       </div>
       <div class="editor-field">
         <label for="task-notes">Notes <span class="field-optional">(optional)</span></label>
         <textarea id="task-notes" name="notes" maxlength="500" rows="4" placeholder="Materials, reminders, or other details"></textarea>
+      </div>
+      <div class="editor-field"><label for="task-estimate">Estimated minutes (optional)</label><input id="task-estimate" name="estimate" type="number" min="1" max="10080" step="1" placeholder="e.g., 60"></div>
+      <div class="editor-field"><label for="task-repeat">Repeat weekly</label><select id="task-repeat" name="repeat"><option value="1">Do not repeat</option><option value="2">2 weeks</option><option value="4">4 weeks</option><option value="8">8 weeks</option></select><p class="field-hint">Creates separate weekly assignments. Editing one does not change the others.</p></div>
+      <div class="editor-field"><label for="task-subtasks">Subtasks (one per line)</label><textarea id="task-subtasks" name="subtasks" rows="3" maxlength="2000" placeholder="Read instructions&#10;Draft response"></textarea></div>
+      <div class="editor-field">
+        <label for="task-files">Attachments (optional)</label>
+        <input id="task-files" type="file" multiple aria-describedby="file-hint file-error">
+        <p id="file-hint" class="field-hint">Add readings, instructions, or other files. Up to 5 files per assignment, 1 MB each. Files stay in this browser and are included in backups.</p>
+        <ul id="attached-files" class="attachment-list"></ul>
+        <p id="file-error" role="alert" class="form-message-error"></p>
       </div>
       <!-- These error / success messages are hidden until Lain's logic sets their text and visibility. -->
       <p id="task-form-error" class="form-message form-message-error" role="alert" hidden>Please check the highlighted fields.</p>
@@ -194,15 +235,18 @@
        The Complete button text can become "Reopen" for a completed assignment. -->
   <template id="task-actions-template">
     <div class="task-actions" role="group" aria-label="Assignment actions">
-      <button type="button" class="task-action task-action-complete" data-action="complete">✓ Complete</button>
+      <label class="status-label">Status <select class="planner-select task-status"><option>Not Started</option><option>In Progress</option><option>Completed</option></select></label>
       <button type="button" class="task-action task-action-edit" data-action="edit">Edit</button>
-      <button type="button" class="task-action task-action-delete" data-action="delete">Delete</button>
+      <!-- Lain creates and attaches the original delete button dynamically. -->
     </div>
   </template>
-<!-- note: this is the module moment, and it was the most efficent way for us to identify and calculate dates for this project -->
+  <!-- Load the shared validation rules before the integrated planner logic. -->
+  <script src="planner_validation.js"></script>
+  <script src="calendar_views.js"></script>
+  <script src="planner_extras.js"></script>
+  <!-- Lain originally used Moment.js for local date calculations. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
-  <!-- SPRINT 1 logic remains unchanged. Sprint 2 task behavior is Lain's scope. -->
-  <script src="planner_logic.js"></script>
+  <script type="module" src="planner_logic.js"></script>
   
 </body>
 </html>

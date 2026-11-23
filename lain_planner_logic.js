@@ -1,4 +1,4 @@
-//Update Note: due to a conflict, this file serves as a reference point for Ericas backend changes. She will attempt to incldue functions from these files 
+//Update Note: Lain's original backend, adapted for Erica's integration.
 
 //Note: This document contains scripts for task set up and calendar display. In the future, it may be best
 //to figure out a way to seperate these into two files as it quickly has become cumbersome to navigate
@@ -18,6 +18,11 @@
 // this trade off was weighed to be worth it against creating a multitude of problems, and requiring many additional processes within functions and helpers to parse the dict
 
 
+// Integration note (Erica): planner_logic.js imports this module and registers
+// callbacks for its new UI. No duplicate storage or event handlers are needed.
+let hooks;
+function configurePlanner(hookFunctions) { hooks = hookFunctions; }
+function setCurrentWeek(value) { currentWeek = value; }
 // index.html variable connections
 const prevWeekButton = document.getElementById("prev-week");
 const nextWeekButton = document.getElementById("next-week");
@@ -77,8 +82,10 @@ const sampletask1 = new Task(
     "Need to ask Mr. Park about #3")
     
 function demodatecalc(){
-    weekstart = find_start_date(1)
-    const duedate2 = moment().add(2, 'days').format('YYYY-MM-DD')
+    const weekstart = find_start_date(1)
+    const duedate2 = globalThis.moment
+        ? moment().add(2, 'days').format('YYYY-MM-DD')
+        : CalendarViews.shiftDay(PlannerRules.localDate(new Date()), 2)
     return duedate2
 }
 
@@ -110,88 +117,101 @@ let tasks = [
 //     return taskDict
 // }
 
-function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary 
-    localStorage.setItem("tasks", JSON.stringify(tasklist)); //local storage only holds strings
-    displayTasks(pullstoredlist());
-    displayCalendar(weeks[0]);
+function updateTasks(tasklist){ //I didnt strictly use the global variable and instead opted for an input. This is to leave us options for later, but at this current stage is not nessesary
+    try {
+        localStorage.setItem("tasks", JSON.stringify(tasklist)); //local storage only holds strings
+    } catch (error) {
+        hooks.announce("Unable to save assignments. Check your browser storage.");
+        return false;
+    }
+    // Erica: refresh filters, summary and the currently selected calendar view.
+    hooks.refreshPlanner();
+    return true;
 }
 
 //puts the fields in the correct format
 //within addTask, update tasklist in localstorage
 //display based on local storage
-function addTask(taskObj){
+function addTask(taskObj, additionalTasks = []){
     const tasklist = pullstoredlist();
-    tasklist.push(taskObj)
-    updateTasks(tasklist) //write the tasks to local storage again 
-    updateTaskQuantity(tasklist)
+    tasklist.push(taskObj, ...additionalTasks)
+    return updateTasks(tasklist) //write the tasks to local storage again
 }
 
 //get task data from form
 const form = document.getElementById('task-form');
 
-form.addEventListener('submit', (event) => {
-    event.preventDefault(); //this just prevents a page reload we may not need this
-    const taskData = new FormData(form); //uses formData to get the fields
-    const data = Object.fromEntries(taskData.entries()); //this in intended to pull in each field
-    key = initKey(); //makes a new key to be used
-    title = data.title;
-    course = data.course;
-    category = data.assignmentType;
-    stat = "Not Started"; //cannot use status
-    priority = data.priority;
-    dueDate = data.dueDate;
-    dueTime = data.dueTime;
-    notes = data.notes;
-    newTask = new Task(key, title, course, category, stat, priority, dueDate, dueTime, notes);
-    addTask(newTask);
-    }
-)
+// Erica: the separate form handler validates, builds the Task, and calls addTask/updateTasks.
+form.addEventListener('submit', event => hooks.submitPlannerForm(event));
 
+// Construct the task from the form fields (Lain's original field mapping).
+// Erica: take validated values and retain the existing key/status when editing.
+function taskFromForm(data, existing) {
+    const key = existing ? existing.key : initKey(); //makes a new key to be used
+    const title = PlannerRules.clean(data.title);
+    const course = PlannerRules.clean(data.course);
+    const category = data.assignmentType;
+    const stat = existing ? PlannerRules.status(existing.status) : "Not Started"; //cannot use status
+    const priority = data.priority;
+    const dueDate = data.dueDate;
+    const dueTime = data.dueTime;
+    const notes = PlannerRules.clean(data.notes);
+    const newTask = new Task(key, title, course, category, stat, priority, dueDate, dueTime, notes);
+    return newTask;
+}
 
 //DISPLAYING TASK LIST ////////////////////////////////////////////
 
 //add event listener that waits for the submission of the task form
 function pullstoredlist(){
-    const rawtasklist = localStorage.getItem("tasks");
-    const tasklist = JSON.parse(rawtasklist) || [];
-    return tasklist;
+    // Erica: guard against malformed or unavailable browser storage.
+    try {
+        const rawtasklist = localStorage.getItem("tasks");
+        const tasklist = JSON.parse(rawtasklist) || [];
+        return Array.isArray(tasklist) ? tasklist.filter(task => task && typeof task === "object") : [];
+    } catch (error) {
+        hooks.announce("Saved assignments could not be read. Check your browser storage.");
+        return [];
+    }
 }
 
 function displayTasks(tasklist) {
     //fetching data
     taskList.innerHTML = "";
+    if (!tasklist.length) hooks.showEmptyTasks();
     //use the attributes of the tasks to make an element
     for (let task of tasklist) {
         const taskElement = document.createElement("div");
-        taskElement.classList.add("task");
+        taskElement.classList.add("task", "task-card");
 
         const title = document.createElement("h3"); //these labels can be updated to match UI in future sprint
         title.textContent = task.title;
 
-        const courseandtype = document.createElement("h4");
+        const courseandtype = document.createElement("p");
         courseandtype.textContent = `${task.course} • ${task.category}`;
 
-        const priorgency = document.createElement("h5");
+        const priorgency = document.createElement("div");
         priorgency.textContent = `${task.status} • Priority: ${task.priority}`;
 
         const due = document.createElement("p");
-        due.textContent = `Due ${task.dueDate} at ${task.dueTime}`;
+        due.textContent = `Due ${hooks.formatDeadline(task)}`;
 
-        const notes = document.createElement("h6");
+        const notes = document.createElement("p");
         notes.textContent = task.notes;
 
         const delbutton = document.createElement('button');
-        delbutton.textContent = `[X]`;
-        delbutton.className = 'del-btn';
+        delbutton.textContent = "Delete";
+        delbutton.className = 'del-btn task-action task-action-delete';
+        delbutton.type = 'button';
+        delbutton.setAttribute('aria-label', 'Delete ' + task.title);
         delbutton.id = task.key;
         //need to add a popup check
+        // Erica: confirmation now runs in loadbuttons below.
 
         taskElement.appendChild(title);
-        taskElement.appendChild(courseandtype);
-        taskElement.appendChild(priorgency);
-        taskElement.appendChild(due);
-        taskElement.appendChild(notes);
-        taskElement.appendChild(delbutton);
+        // Erica: the separate presentation helper formats these fields as accessible badges
+        // and adds status/edit controls, while the original delete button stays connected.
+        hooks.decorateTaskCard(taskElement, task, courseandtype, priorgency, due, notes, delbutton);
 
         taskList.appendChild(taskElement);
     }
@@ -208,58 +228,11 @@ const filterOverdue = document.getElementById("overdue-filter")
 const filterUpcoming = document.getElementById("upcoming-filter")
 
 
-filterAll.addEventListener("click", function() {
-    displayTasks(pullstoredlist()); //just display full list of tasks
-    //remove active from previous button
-    filterButtons.forEach(button => button.classList.remove('active'));
-    //add active to clicked tab
-    filterAll.classList.add("active");
-})
-
-filterCompleted.addEventListener("click", function() {
-    let tasklist = pullstoredlist()
-    let filteredTasks = []
-    for (const task of tasklist){
-        if (task.status == "Complete"){ 
-            filteredTasks.push(task);
-    }};
-    displayTasks(filteredTasks);
-    //remove active from previous button
-    filterButtons.forEach(button => button.classList.remove('active'));
-    //add active to clicked tab
-    filterCompleted.classList.add("active");
-})
-
-filterUpcoming.addEventListener("click", function() {
-    let filteredTasks = []
-    let tasklist = pullstoredlist()
-    for (const task of tasks){
-        let formattedduedate = moment(task.dueDate)
-        if (task.status != "Complete" && formattedduedate.isAfter(moment())){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is after currentDate
-            filteredTasks.push(task);
-    }};
-    displayTasks(filteredTasks);
-    //remove active from previous button
-    filterButtons.forEach(button => button.classList.remove('active'));
-    //add active to clicked tab
-    filterUpcoming.classList.add("active");
-})
-
-filterOverdue.addEventListener("click", function() {
-    let filteredTasks = []
-    let tasklist = pullstoredlist()
-    for (let task of tasklist){
-        let formattedduedate = moment(task.dueDate)
-        if (task.status != "Complete" && formattedduedate.isBefore(moment())){//we currently do not have a way to pin point the current date, but in the future, this function should include && dueDate is before current date
-            filteredTasks.push(task);
-    }};
-    displayTasks(filteredTasks);
-    //remove active from previous button
-    filterButtons.forEach(button => button.classList.remove('active'));
-    //add active to clicked tab
-    filterOverdue.classList.add("active");
-})
-
+// Erica: all four existing buttons now use the same combined filtering helper.
+filterAll.addEventListener("click", function() { hooks.selectTaskFilter("all", filterAll); });
+filterCompleted.addEventListener("click", function() { hooks.selectTaskFilter("completed", filterCompleted); });
+filterUpcoming.addEventListener("click", function() { hooks.selectTaskFilter("upcoming", filterUpcoming); });
+filterOverdue.addEventListener("click", function() { hooks.selectTaskFilter("overdue", filterOverdue); });
 
 // CALENDAR ///////////////////////////////////////////////////////////////////
 
@@ -270,25 +243,24 @@ let currentWeek = 0; //starts at 0
 
 
 function find_start_date(x){
-    const today = moment().format('YYYY-MM-DD');
+    // Erica: retain Moment when available, with a local-date fallback.
     var week_multi = x -1;
     var week_add = week_multi * 7
-    const start_week = moment().add(week_add, 'days').format('YYYY-MM-DD')
+    const start_week = globalThis.moment
+        ? moment().add(week_add, 'days').format('YYYY-MM-DD')
+        : CalendarViews.shiftDay(PlannerRules.localDate(new Date()), week_add)
     return start_week
 }
 
 function find_end_week(x){
-    const today = moment().format('YYYY-MM-DD');
     var week_multi = x -1;
     var week_add = week_multi * 7
     var week_end = week_add + 6 //for end of the week
-    const end_week = moment().add(week_end, 'days').format('YYYY-MM-DD')
+    const end_week = globalThis.moment
+        ? moment().add(week_end, 'days').format('YYYY-MM-DD')
+        : CalendarViews.shiftDay(PlannerRules.localDate(new Date()), week_end)
     return end_week
 }
-
-console.log(find_start_date(2))
-console.log(find_end_week(2))
-
 
 const weeks = [
     {
@@ -346,7 +318,12 @@ function formatDate(dateString) {
 }
 
 function displayWeekHeading(weekNo) { //this function refers to the header part of the calender
-    const week = weeks[weekNo];
+    // Erica: bound the week index and respect alternate views and custom term dates.
+    weekNo = Math.max(0, Math.min(weeks.length - 1, weekNo));
+    currentWeek = weekNo;
+    if (hooks.getCalendarView() !== 'week') { hooks.displayAlternateCalendar(); return; }
+    const week = { ...weeks[weekNo], start: hooks.termDateOffset(weekNo * 7), end: hooks.termDateOffset(weekNo * 7 + 6) };
+    hooks.updateWeekControls();
     weekHeading.textContent = `Week ${week.week} of 8`;
     weekRange.textContent =`${formatDate(week.start)} – ${formatDate(week.end)}`;
     currentWeek = weekNo;
@@ -361,23 +338,22 @@ weekTabs.forEach(function(wTab) {
     wTab.addEventListener("click", function() {
         const weekNo = Number(wTab.dataset.week);
         displayWeekHeading(weekNo);
-        //remove active from previous button
-        weekTabs.forEach(wTab => wTab.classList.remove('active'));
-        //add active to clicked tab
-        wTab.classList.add("active");
+        // Active tab and accessibility state are updated by hooks.updateWeekControls().
     });
 });
 
 // Next week button 
 nextWeekButton.addEventListener("click", function(){
     let nextWeekNo = currentWeek + 1; //right now the data is static and has a limit, but in the future, it will not be static. For this reason, a limit on the week number has not been enforced.
-    displayWeekHeading(nextWeekNo);
+    if (hooks.getCalendarView() === 'week') displayWeekHeading(nextWeekNo);
+    else hooks.navigateCalendar(1);
     });
 
 // last week button
 prevWeekButton.addEventListener("click", function(){
     let prevWeekNo = currentWeek - 1; //right now the data is static and has a limit, but in the future, it will not be static. For this reason, a limit on the week number has not been enforced.
-    displayWeekHeading(prevWeekNo)
+    if (hooks.getCalendarView() === 'week') displayWeekHeading(prevWeekNo);
+    else hooks.navigateCalendar(-1);
     });
 
 
@@ -390,7 +366,7 @@ function displayCalendar(week){
     for (let i = 0; i < 7; i++) {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i); //set date
-        const dateString = currentDate.toISOString().split("T")[0]; //makes string from date
+        const dateString = PlannerRules.localDate(currentDate); //local date avoids UTC shifts
 
         const day = document.createElement("div"); //creating day element
         day.classList.add("day");                   
@@ -416,16 +392,17 @@ function displayCalendar(week){
         //task display (within day)
         const body = document.createElement("div");
         body.classList.add("day-body");
+        body.appendChild(hooks.quickButton(dateString)); // Erica: quick-add on this date
         //fetch the tasks
         const tasklist = pullstoredlist();
         updateTaskQuantity(tasklist);
-        const tasksDueOnDay = tasklist.filter(function(task) {
+        const tasksDueOnDay = PlannerRules.sortTasks(tasklist).filter(function(task) {
             return task.dueDate === dateString;
         });
         tasksDueOnDay.forEach(function(task) {
             const taskElement = document.createElement("div");
             taskElement.classList.add("calendar-task");
-            taskElement.textContent = task.title;
+            hooks.decorateCalendarTask(taskElement, task); // Erica: time, urgency and course color
             body.appendChild(taskElement);
         });
 
@@ -442,9 +419,10 @@ const resetButton = document.getElementById("reset-button");
 resetButton.addEventListener("click", function(){
     // it would be best to add a warning pop up 
     // localStorage.clear();
-    emptytasks = []
+    if (!confirm("Reset the planner? All saved assignments will be removed.")) return;
+    const emptytasks = []
     //leaves the "tasks" key active
-    updateTasks(emptytasks);
+    if (updateTasks(emptytasks)) hooks.announce("Planner reset.");
     });
 
 //load demo 
@@ -452,25 +430,24 @@ const demoDataButton = document.getElementById("sample-button");
 
 demoDataButton.addEventListener("click", function(){
     // it would be best to add a warning pop up 
-    localStorage.setItem("tasks", JSON.stringify(tasks)); //this is now refferencing the global list
-    updateTasks(tasks)
-    weekTabs.forEach(wTab => wTab.classList.remove('active'));
-    displayWeekHeading(0);
-
+    if (!confirm("Load sample data? This replaces any saved assignments.")) return;
+    // Erica: refresh sample dates on demand, using the original Task instances.
+    sampletask1.dueDate = find_start_date(1);
+    sampletask2.dueDate = demodatecalc();
+    if (updateTasks(tasks)) hooks.announce("Sample assignments loaded.");
     });
 
 //LETS GET THIS PARTY STARTED! 
-displayTasks(pullstoredlist());
-displayWeekHeading(0);
+// Initial display is triggered by planner_logic.js after the hooks are configured.
 
 
 
 function loadbuttons(){
     const delbuttons = document.querySelectorAll(".del-btn")
     delbuttons.forEach(button => button.addEventListener('click', (event) => {
+        if (!confirm('Delete this assignment? This cannot be undone.')) return;
         let targetkey = button.id;
-        const rawtasklist = localStorage.getItem("tasks");
-        const tasklist = JSON.parse(rawtasklist) || [];
+        const tasklist = pullstoredlist();
         for (let task of tasklist){
             if (task.key == targetkey){
                 const index = tasklist.indexOf(task);
@@ -479,6 +456,16 @@ function loadbuttons(){
                 }
             }
         }
-        updateTasks(tasklist); //reload the tasks with an updated list
+        if (updateTasks(tasklist)) { //reload the tasks with an updated list
+            hooks.announce('Assignment deleted.');
+            document.getElementById('add-task').focus();
+        }
 
     }))};
+
+// Functions and shared elements imported by Erica's integration module.
+export { Task, initKey, updateTaskQuantity, demodatecalc, updateTasks, addTask,
+    taskFromForm, pullstoredlist, displayTasks, find_start_date, find_end_week,
+    formatDate, displayWeekHeading, displayCalendar, loadbuttons,
+    configurePlanner, setCurrentWeek, currentWeek, form, filterButtons, taskList,
+    calendarGrid, prevWeekButton, nextWeekButton, weekTabs };
