@@ -1,0 +1,29 @@
+/* Align the logo and title even at narrow iPhone widths. */
+.brand { align-items: center; min-width: 0; }
+.brand > .txst-logo { height: auto; object-fit: contain; flex-shrink: 0; }
+.brand > .brand-subtitle { align-self: center; line-height: 1.25; }
+.calendar-view-controls { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
+.calendar-view-controls button { background: #fff; border: 1px solid #b6a79a; border-radius: 7px; padding: 9px 12px; min-height: 44px; color: #501214; font: inherit; font-weight: 700; }
+.calendar-view-controls button[aria-pressed="true"] { background: #501214; color: white; border-color: #501214; }
+#calendar-today { margin-left: auto; }
+#week-tabs[hidden] { display: none; }
+.calendar-grid.month-view { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); min-height: 0; }
+.month-weekday { text-align: center; padding: 8px 0; font-size: 11px; font-weight: 700; background: #f4eee6; }
+.month-date { min-width: 0; min-height: 65px; border: 0; border-top: 1px solid #ded4cb; border-right: 1px solid #ded4cb; border-radius: 0; background: white; color: #501214; padding: 5px 2px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 4px; font: inherit; }
+.month-date.outside-month { background: #f8f6f3; color: #74675e; }
+.month-date.is-today { box-shadow: inset 0 0 0 2px #501214; font-weight: 700; }
+.month-count { font-size: 10px; background: #f1e5c8; color: #501214; border-radius: 12px; padding: 2px 5px; }
+.calendar-grid.day-view { display: block; min-height: 0; }
+.day-view .day { display: block; border: 0; }
+.day-view .day-heading { border-right: 0; border-bottom: 1px solid #ded4cb; }
+.day-view .day-body { min-height: 100px; }
+.day-view .calendar-task { padding: 12px; margin: 6px 0; font-size: 14px; }
+@media(max-width:630px) {
+  .header-inner .brand { align-items: center; gap: 8px; }
+  .brand > .txst-logo { width: min(43vw, 165px); }
+  .brand > .brand-subtitle { font-size: 13px; padding-left: 8px; }
+  .calendar-view-controls button { flex: 1; padding: 8px 6px; font-size: 12px; }
+  #calendar-today { margin-left: 0; }
+  .month-date { min-height: 48px; font-size: 12px; }
+  .month-count { font-size: 10px; padding: 1px 4px; }
+}

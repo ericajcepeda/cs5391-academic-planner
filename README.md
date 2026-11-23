@@ -17,6 +17,29 @@ Tasks, milestones, and progress are tracked through our [Jira Project Board](htt
 
 
 ### Sources
+#### Lain Bowman's Sources (Backend)
+https://www.technologyuk.net/website-development/introduction-to-javascript/javascript-working-with-dates-and-times.shtml
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
+
+https://medium.com/@wachirasilvia8/adding-items-to-the-local-storage-9c7bb31f209 
+
+https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID
+
+https://stackoverflow.com/questions/3547035/getting-html-form-values
+
+https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_pill_button
+
+References for Moment module 
+
+https://stackoverflow.com/questions/19957308/subtract-1-week-from-current-date-javascript
+
+https://momentjs.com/
+
+https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
+
+
+### Erica Cepeda's Sources
 - [JavaScript Dates and Times](https://www.technologyuk.net/website-development/introduction-to-javascript/javascript-working-with-dates-and-times.shtml)
 - [JavaScript Date and Time Formatting](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat)
 - [Responsive Web Design](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design)
